@@ -180,13 +180,15 @@ function normal_move($new, $playerSymbol)
     $new = $forced[0];
     $done = $forced[1];
     
-    if ($done == 0) {
-        $index = rand(0, 8);
-        while ($new[$index] != '') {
-            $index = rand(0, 8);
-        }
-        $new[$index] = $symbol;
+    if ($done) {
+        return $new;
     }
+
+    $index = rand(0, 8);
+    while ($new[$index] != '') {
+        $index = rand(0, 8);
+    }
+    $new[$index] = $symbol;
     
     return $new;    
 }
@@ -201,11 +203,11 @@ function genius_move($new, $turn, $start, $playerSymbol)
     $new = $forced[0];
     $done = $forced[1];
     
-    if ($done == 1) {
+    if ($done) {
         return $new;
     }
     
-    if ($start == "") {
+    if ($start == '') {
         
         if ($turn == 1) {
             $new[rand(0, 4) * 2] = $symbol;
@@ -386,185 +388,79 @@ function genius_move($new, $turn, $start, $playerSymbol)
     return $new;    
 }
 
-function forced($new, $symbol)
-{    
-    $done = 1;
-    if ($new[0] == $symbol && $new[0] == $new[1] && $new[2] == null) {
-        $new[2] = $symbol;
-    } elseif ($new[0] == $symbol && $new[0] == $new[2] && $new[1] == null) {
-        $new[1] = $symbol;
-    } elseif ($new[1] == $symbol && $new[1] == $new[2] && $new[0] == null) {
-        $new[0] = $symbol;
-    } elseif ($new[3] == $symbol && $new[3] == $new[4] && $new[5] == null) {
-        $new[5] = $symbol;
-    } elseif ($new[3] == $symbol && $new[3] == $new[5] && $new[4] == null) {
-        $new[4] = $symbol;
-    } elseif ($new[4] == $symbol && $new[4] == $new[5] && $new[3] == null) {
-        $new[3] = $symbol;
-    } elseif ($new[6] == $symbol && $new[6] == $new[7] && $new[8] == null) {
-        $new[8] = $symbol;
-    } elseif ($new[6] == $symbol && $new[6] == $new[8] && $new[7] == null) {
-        $new[7] = $symbol;
-    } elseif ($new[7] == $symbol && $new[7] == $new[8] && $new[6] == null) {
-        $new[6] = $symbol;
-    } elseif ($new[0] == $symbol && $new[0] == $new[3] && $new[6] == null) {
-        $new[6] = $symbol;
-    } elseif ($new[0] == $symbol && $new[0] == $new[6] && $new[3] == null) {
-        $new[3] = $symbol;
-    } elseif ($new[3] == $symbol && $new[3] == $new[6] && $new[0] == null) {
-        $new[0] = $symbol;
-    } elseif ($new[1] == $symbol && $new[1] == $new[4] && $new[7] == null) {
-        $new[7] = $symbol;
-    } elseif ($new[1] == $symbol && $new[1] == $new[7] && $new[4] == null) {
-        $new[4] = $symbol;
-    } elseif ($new[4] == $symbol && $new[4] == $new[7] && $new[1] == null) {
-        $new[1] = $symbol;
-    } elseif ($new[2] == $symbol && $new[2] == $new[5] && $new[8] == null) {
-        $new[8] = $symbol;
-    } elseif ($new[2] == $symbol && $new[2] == $new[8] && $new[5] == null) {
-        $new[5] = $symbol;
-    } elseif ($new[5] == $symbol && $new[5] == $new[8] && $new[2] == null) {
-        $new[2] = $symbol;
-    } elseif ($new[0] == $symbol && $new[0] == $new[4] && $new[8] == null) {
-        $new[8] = $symbol;
-    } elseif ($new[0] == $symbol && $new[0] == $new[8] && $new[4] == null) {
-        $new[4] = $symbol;
-    } elseif ($new[4] == $symbol && $new[4] == $new[8] && $new[0] == null) {
-        $new[0] = $symbol;
-    } elseif ($new[2] == $symbol && $new[2] == $new[4] && $new[6] == null) {
-        $new[6] = $symbol;
-    } elseif ($new[2] == $symbol && $new[2] == $new[6] && $new[4] == null) {
-        $new[4] = $symbol;
-    } elseif ($new[4] == $symbol && $new[4] == $new[6] && $new[2] == null) {
-        $new[2] = $symbol;
-    } elseif ($new[0] != null && $new[0] == $new[1] && $new[2] == null) {
-        $new[2] = $symbol;
-    } elseif ($new[0] != null && $new[0] == $new[2] && $new[1] == null) {
-        $new[1] = $symbol;
-    } elseif ($new[1] != null && $new[1] == $new[2] && $new[0] == null) {
-        $new[0] = $symbol;
-    } elseif ($new[3] != null && $new[3] == $new[4] && $new[5] == null) {
-        $new[5] = $symbol;
-    } elseif ($new[3] != null && $new[3] == $new[5] && $new[4] == null) {
-        $new[4] = $symbol;
-    } elseif ($new[4] != null && $new[4] == $new[5] && $new[3] == null) {
-        $new[3] = $symbol;
-    } elseif ($new[6] != null && $new[6] == $new[7] && $new[8] == null) {
-        $new[8] = $symbol;
-    } elseif ($new[6] != null && $new[6] == $new[8] && $new[7] == null) {
-        $new[7] = $symbol;
-    } elseif ($new[7] != null && $new[7] == $new[8] && $new[6] == null) {
-        $new[6] = $symbol;
-    } elseif ($new[0] != null && $new[0] == $new[3] && $new[6] == null) {
-        $new[6] = $symbol;
-    } elseif ($new[0] != null && $new[0] == $new[6] && $new[3] == null) {
-        $new[3] = $symbol;
-    } elseif ($new[3] != null && $new[3] == $new[6] && $new[0] == null) {
-        $new[0] = $symbol;
-    } elseif ($new[1] != null && $new[1] == $new[4] && $new[7] == null) {
-        $new[7] = $symbol;
-    } elseif ($new[1] != null && $new[1] == $new[7] && $new[4] == null) {
-        $new[4] = $symbol;
-    } elseif ($new[4] != null && $new[4] == $new[7] && $new[1] == null) {
-        $new[1] = $symbol;
-    } elseif ($new[2] != null && $new[2] == $new[5] && $new[8] == null) {
-        $new[8] = $symbol;
-    } elseif ($new[2] != null && $new[2] == $new[8] && $new[5] == null) {
-        $new[5] = $symbol;
-    } elseif ($new[5] != null && $new[5] == $new[8] && $new[2] == null) {
-        $new[2] = $symbol;
-    } elseif ($new[0] != null && $new[0] == $new[4] && $new[8] == null) {
-        $new[8] = $symbol;
-    } elseif ($new[0] != null && $new[0] == $new[8] && $new[4] == null) {
-        $new[4] = $symbol;
-    } elseif ($new[4] != null && $new[4] == $new[8] && $new[0] == null) {
-        $new[0] = $symbol;
-    } elseif ($new[2] != null && $new[2] == $new[4] && $new[6] == null) {
-        $new[6] = $symbol;
-    } elseif ($new[2] != null && $new[2] == $new[6] && $new[4] == null) {
-        $new[4] = $symbol;
-    } elseif ($new[4] != null && $new[4] == $new[6] && $new[2] == null) {
-        $new[2] = $symbol;
-    } else {
-        $done = 0;
+function forced($grid, $symbol)
+{
+    $winningLines = winningRows();
+
+    $forcedWin = false;
+    foreach ($winningLines as $winningLine) {
+        $gridLine = array(
+            $grid[$winningLine[0]] ?? '',
+            $grid[$winningLine[1]] ?? '',
+            $grid[$winningLine[2]] ?? ''
+        );
+
+        if ((array_count_values($gridLine)[$symbol] ?? 0) == 2 && (array_count_values($gridLine)[''] ?? 0) == 1) {
+            $grid[$winningLine[array_search('', $gridLine)]] = $symbol;
+            $forcedWin = true;
+            break;
+        }
     }
-    
+
     return array(
-        $new,
-        $done
-    );    
+        $grid,
+        $forcedWin
+    );
 }
 
-function check_win($new, $symbol)
-{    
-    $win_row = array_fill(0, 3, 9);
+function check_win($grid, $symbol)
+{
+    $winningLines = winningRows();
+
+    $winningRow = array();
     $win = 0;
-    
-    if ($new[0] != null && $new[0] == $new[1] && $new[0] == $new[2]) {
-        $win_row = array(
-            0,
-            1,
-            2
+    foreach ($winningLines as $winningLine) {
+        $gridLine = array(
+            $grid[$winningLine[0]] ?? '',
+            $grid[$winningLine[1]] ?? '',
+            $grid[$winningLine[2]] ?? ''
         );
-    } elseif ($new[0] != null && $new[0] == $new[4] && $new[0] == $new[8]) {
-        $win_row = array(
-            0,
-            4,
-            8
-        );
-    } elseif ($new[0] != null && $new[0] == $new[3] && $new[0] == $new[6]) {
-        $win_row = array(
-            0,
-            3,
-            6
-        );
-    } elseif ($new[2] != null && $new[2] == $new[4] && $new[2] == $new[6]) {
-        $win_row = array(
-            2,
-            4,
-            6
-        );
-    } elseif ($new[2] != null && $new[2] == $new[5] && $new[2] == $new[8]) {
-        $win_row = array(
-            2,
-            5,
-            8
-        );
-    } elseif ($new[4] != null && $new[4] == $new[1] && $new[4] == $new[7]) {
-        $win_row = array(
-            1,
-            4,
-            7
-        );
-    } elseif ($new[4] != null && $new[4] == $new[3] && $new[4] == $new[5]) {
-        $win_row = array(
-            3,
-            4,
-            5
-        );
-    } elseif ($new[6] != null && $new[6] == $new[7] && $new[6] == $new[8]) {
-        $win_row = array(
-            6,
-            7,
-            8
-        );
-    }
-    
-    if ($win_row != array_fill(0, 3, 9)) {
-        ($new[$win_row[0]] == $symbol) ? $win = 1 : $win = 2;
-    }
-    
-    if ($new[0] != null && $new[1] != null && $new[2] != null && $new[3] != null && $new[4] != null && $new[5] != null && $new[6] != null && $new[7] != null && $new[8] != null) {
-        if ($win == 0) {
-            $win = 3;
-            $win_row = array_fill(0, 3, 10);
+
+        if (max($gridLine) != '' && array_count_values($gridLine)[max($gridLine)] == 3)
+        {
+            $winningRow = $winningLine;
+            break;
         }
+    }
+    
+    if (!empty($winningRow)) {
+        ($new[$winningRow[0]] == $symbol) ? $win = 1 : $win = 2;
+    }
+    
+    if ($win == 0 && (array_count_values($grid)[null] ?? 0) == 0)
+    {
+        $win = 3;
+        $winningRow = array_fill(0, 3, 10);
     }
     
     return array(
         $win,
-        $win_row
+        $winningRow
     );    
+}
+
+function winningRows()
+{
+    return array(
+        array(0, 1, 2),
+        array(3, 4, 5),
+        array(6, 7, 8),
+        array(0, 3, 6),
+        array(1, 4, 7),
+        array(2, 5, 8),
+        array(2, 4, 6),
+        array(0, 4, 8)
+    );
 }
 
 ?>
