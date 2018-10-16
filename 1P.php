@@ -79,14 +79,18 @@ if (isset($_GET['go']))
         for ($i = 0; $i <= 8; $i++)
         {
             if ($old[$i] != $new[$i])
-        {
+            {
                 if ($new[$i] != $symbol && $win != 1)
+                {
                     $errmsg = "Please Mark '$symbol'";
+                }
                 $chgcount++;
             }
         }
         if ($chgcount != 1 && $win != 1)
+        {
             $errmsg = 'Mark Exactly One Box';
+        }
     } else {
         $errmsg = "Please Mark '$symbol'";
     }
@@ -220,40 +224,21 @@ function geniusMove(&$grid, $turn, $start, $playerSymbol)
     
     $old = $grid;
     
-    if (tryToWin($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToWin($grid, $symbol)) return;
 
-    if (tryToBlockWin($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToBlockWin($grid, $symbol)) return;
 
-    if (tryToFork($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToFork($grid, $symbol)) return;
 
-    if (tryToBlockFork($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToBlockFork($grid, $symbol)) return;
 
-    if (tryToPlayCenter($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToForceDefense($grid, $symbol)) return;
 
-    if (tryToPlayOppositeCorner($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToPlayCenter($grid, $symbol)) return;
 
-    if (tryToPlayCorner($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToPlayOppositeCorner($grid, $symbol)) return;
+
+    if (tryToPlayCorner($grid, $symbol)) return;
 
     playRandom($grid, $symbol);
 }
@@ -285,18 +270,15 @@ function tryToBlockWin(&$grid, $symbol)
 
 function tryToFork(&$grid, $symbol)
 {
-    for ($i = 0; $i <= 8; $i++)
+    foreach (emptyBoxes($grid) as $i)
     {
-        if (empty($grid[$i]))
+        $testGrid = $grid;
+        $testGrid[$i] = $symbol;
+        $winningMoves = winAvailable($testGrid, $symbol);
+        if (count($winningMoves) >= 2)
         {
-            $testGrid = $grid;
-            $testGrid[$i] = $symbol;
-            $winningMoves = winAvailable($testGrid, $symbol);
-            if (count($winningMoves) >= 2)
-            {
-                $grid[$i] = $symbol;
-                return true;
-            }
+            $grid[$i] = $symbol;
+            return true;
         }
     }
 
@@ -308,17 +290,14 @@ function tryToBlockFork(&$grid, $symbol)
     $opponentSymbol = oppositeSymbol($symbol);
 
     $blockingMoves = array();
-    for ($i = 0; $i <= 8; $i++)
+    foreach (emptyBoxes($grid) as $i)
     {
-        if (empty($grid[$i]))
+        $futureGrid = $grid;
+        $futureGrid[$i] = $opponentSymbol;
+        $winningMoves = winAvailable($futureGrid, $opponentSymbol);
+        if (count($winningMoves) >= 2)
         {
-            $futureGrid = $grid;
-            $futureGrid[$i] = $opponentSymbol;
-            $winningMoves = winAvailable($futureGrid, $opponentSymbol);
-            if (count($winningMoves) >= 2)
-            {
-                $blockingMoves[] = $i;
-            }
+            $blockingMoves[] = $i;
         }
     }
 
@@ -342,7 +321,7 @@ function tryToBlockFork(&$grid, $symbol)
         }
     }
 
-    // Settle for a fork-blocking move that doesn't result in another fork
+    // Check if there is a fork-blocking move that doesn't result in another fork
     foreach ($blockingMoves as $blockingMove)
     {
         $futureGrid = $grid;
@@ -352,16 +331,14 @@ function tryToBlockFork(&$grid, $symbol)
             $winningMoves = winAvailable($futureGrid, $opponentSymbol);
             if (count($winningMoves) < 2)
             {
-                echo "hey";
                 $grid[$blockingMove] = $symbol;
                 return true;
             }
         }
         else 
         {
-            if (!tryToFork($futureGrid))
+            if (!tryToFork($futureGrid, $opponentSymbol))
             {
-                echo "buddy";
                 $grid[$blockingMove] = $symbol;
                 return true;
             }
@@ -369,6 +346,26 @@ function tryToBlockFork(&$grid, $symbol)
     }
 
     return false;
+}
+
+function tryToForceDefense(&$grid, $symbol)
+{
+    $opponentSymbol = oppositeSymbol($symbol);
+
+    foreach (emptyBoxes($grid) as $i)
+    {
+        $futureGrid = $grid;
+        $futureGrid[$i] = $symbol;
+        if (tryToBlockWin($futureGrid, $opponentSymbol))
+        {
+            $winningMoves = winAvailable($futureGrid, $opponentSymbol);
+            if (count($winningMoves) < 2)
+            {
+                $grid[$i] = $symbol;
+                return true;
+            }
+        }
+    }
 }
 
 function tryToPlayCenter(&$grid, $symbol)
@@ -496,6 +493,11 @@ function checkWin($grid, $symbol)
         $win,
         $winningRow
     );    
+}
+
+function emptyBoxes($grid)
+{
+    return array_keys($grid, '');
 }
 
 function gridRows()
