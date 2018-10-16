@@ -27,7 +27,8 @@ html {
 
 <?PHP
 
-if (!isset($_GET['go'])) {
+if (!isset($_GET['go']))
+{
     $disabled = '';
     $difficulty = $_GET['difficulty'] ?? 2;
     $symbol = $_GET['symbolhidden'] ?? 'checked' == 'checked' ? 'X' : 'O';
@@ -39,7 +40,8 @@ if (!isset($_GET['go'])) {
     $disabled = 'disabled';
     $difficulty = $_GET['difficulty'];
     $turn = $_GET['turn'];
-    if (isset($_GET['symboldsp'])) {
+    if (isset($_GET['symboldsp']))
+    {
         $symbol = $_GET['symboldsp'];
         $start = isset($_GET['startdsp']) ? 'checked' : '';
     } else {
@@ -56,22 +58,28 @@ $symbol == 'X' ? $symbolcheck[0] = 'checked' : $symbolcheck[1] = 'checked';
 
 $startcheck = $start == 'checked' ? 'checked' : '';
 
-if (isset($_GET['go'])) {
-    for ($i = 0; $i <= 8; $i++) {
+if (isset($_GET['go']))
+{
+    for ($i = 0; $i <= 8; $i++)
+    {
         $old[$i] = $_GET['old' . ($i + 1)];
         $new[$i] = $_GET['new' . ($i + 1)];
-        $new[$i] = empty(trim($new[$i])) ? null : strtoupper($new[$i]);
+        $new[$i] = empty(trim($new[$i])) ? '' : strtoupper($new[$i]);
     }
 }
 
 $win = (!isset($_GET['win'])) ? 0 : $_GET['win'];
 
-if (isset($_GET['go'])) {
+if (isset($_GET['go']))
+{
     $invchar = preg_match("/[^XO]/i", implode($new)) ? 1 : 0;
-    if ($invchar == 0) {
+    if ($invchar == 0)
+    {
         $chgcount = 0;
-        for ($i = 0; $i <= 8; $i++) {
-            if ($old[$i] != $new[$i]) {
+        for ($i = 0; $i <= 8; $i++)
+        {
+            if ($old[$i] != $new[$i])
+        {
                 if ($new[$i] != $symbol && $win != 1)
                     $errmsg = "Please Mark '$symbol'";
                 $chgcount++;
@@ -86,358 +94,399 @@ if (isset($_GET['go'])) {
 
 $win = 0;
 
-(isset($errmsg)) ? $new = $old : $errmsg = "";
+(isset($errmsg)) ? $new = $old : $errmsg = '';
 
-if ($start == '' && $turn == 1 && isset($_GET['go'])) {
+if (empty($start) && $turn == 1 && isset($_GET['go']))
+{
     $new = array_fill(0, 9, '');
     $errmsg = '';
-    switch ($difficulty) {
+    switch ($difficulty)
+    {
         case 0:
-            $new = novice_move($new, $symbol);
+            noviceMove($new, $symbol);
             break;
         case 1:
-            $new = normal_move($new, $symbol);
+            normalMove($new, $symbol);
             break;
         case 2:
-            $new = genius_move($new, $turn, $start, $symbol);
+            geniusMove($new, $turn, $start, $symbol);
             break;
     }
     $turn++;
     $old = $new;
     $disabled = 'disabled';
-} elseif ($new != $old) {
+} 
+elseif ($new != $old)
+{
     $turn++;
-    $check_win = check_win($new, $symbol);
-    $win = $check_win[0];
-    $win_row = $check_win[1];
-    if ($win == 1) {
+    $checkWin = checkWin($new, $symbol);
+    $win = $checkWin[0];
+    $winningRow = $checkWin[1];
+    if ($win == 1)
+    {
         $errmsg = 'You Win!';
-    } elseif ($win == 2) {
+    } 
+    elseif ($win == 2)
+    {
         $win = 1;
         $errmsg = 'Computer Wins!';
-    } elseif ($win == 3) {
+    } 
+    elseif ($win == 3)
+    {
         $win = 1;
         $errmsg = 'Cat\'s Game.';
-    } elseif (isset($_GET['go']) && $turn <= 9) {
-        switch ($difficulty) {
+    } 
+    elseif (isset($_GET['go']) && $turn <= 9)
+    {
+        switch ($difficulty)
+        {
             case 0:
-                $new = novice_move($new, $symbol);
+                noviceMove($new, $symbol);
                 break;
             case 1:
-                $new = normal_move($new, $symbol);
+                normalMove($new, $symbol);
                 break;
             case 2:
-                $new = genius_move($new, $turn, $start, $symbol);
+                geniusMove($new, $turn, $start, $symbol);
                 break;
         }
-        $check_win = check_win($new, $symbol);
-        $win = $check_win[0];
-        $win_row = $check_win[1];
+        $checkWin = checkWin($new, $symbol);
+        $win = $checkWin[0];
+        $winningRow = $checkWin[1];
         $turn++;
-        if ($win == 1) {
+        if ($win == 1)
+        {
             $errmsg = 'You Win!';
-        } elseif ($win == 2) {
+        } 
+        elseif ($win == 2)
+        {
             $win = 1;
             $errmsg = 'Computer Wins!';
-        } elseif ($win == 3) {
+        } 
+        elseif ($win == 3)
+        {
             $win = 1;
             $errmsg = 'Cat\'s Game.';
-        } else {
+        } 
+        else 
+        {
             $old = $new;
         }
     }
 }
 
-if (!isset($win_row)) {
-    $win_row = array_fill(0, 3, 9);
-}
-
-for ($i = 0; $i <= 8; $i++) {
-    ($new[$i] != '' or $win == 1) ? $readonly[$i] = "readonly" : $readonly[$i] = "";
-    ($win_row[0] == $i or $win_row[1] == $i or $win_row[2] == $i) ? $locked[$i] = "color:#C00000" : $locked[$i] = "color:#8A4B08";
-    if ($win_row[0] == 10)
-        $locked[$i] = "color:#006699";
-}
-
-function novice_move($new, $playerSymbol)
-{    
-    $symbol = ($playerSymbol == 'X') ? 'O' : 'X';
-    
-    $index = rand(0, 8);
-    while ($new[$index] != '') {
-        $index = rand(0, 8);
-    }
-    $new[$index] = $symbol;
-    
-    return $new;    
-}
-
-function normal_move($new, $playerSymbol)
-{    
-    $symbol = ($playerSymbol == 'X') ? 'O' : 'X';
-    
-    $forced = forced($new, $symbol);
-    $new = $forced[0];
-    $done = $forced[1];
-    
-    if ($done) {
-        return $new;
-    }
-
-    $index = rand(0, 8);
-    while ($new[$index] != '') {
-        $index = rand(0, 8);
-    }
-    $new[$index] = $symbol;
-    
-    return $new;    
-}
-
-function genius_move($new, $turn, $start, $playerSymbol)
-{    
-    $symbol = ($playerSymbol == 'X') ? 'O' : 'X';
-    
-    $old = $new;
-    
-    $forced = forced($new, $symbol);
-    $new = $forced[0];
-    $done = $forced[1];
-    
-    if ($done) {
-        return $new;
-    }
-    
-    if ($start == '') {
-        
-        if ($turn == 1) {
-            $new[rand(0, 4) * 2] = $symbol;
-        } elseif ($turn == 3) {
-            if ($new[4] == $symbol) {
-                if ($new[0] != null) {
-                    $new[8] = $symbol;
-                } elseif ($new[1] != null) {
-                    $new[rand(0, 1) * 2 + 6] = $symbol;
-                } elseif ($new[2] != null) {
-                    $new[6] = $symbol;
-                } elseif ($new[3] != null) {
-                    $new[rand(0, 1) * 6 + 2] = $symbol;
-                } elseif ($new[5] != null) {
-                    $new[rand(0, 1) * 6] = $symbol;
-                } elseif ($new[6] != null) {
-                    $new[2] = $symbol;
-                } elseif ($new[7] != null) {
-                    $new[rand(0, 1) * 2] = $symbol;
-                } elseif ($new[8] != null) {
-                    $new[0] = $symbol;
-                }
-            } else {
-                if ($new[4] != null) {
-                    if ($new[0] == $symbol) {
-                        $new[8] = $symbol;
-                    } elseif ($new[2] == $symbol) {
-                        $new[6] = $symbol;
-                    } elseif ($new[6] == $symbol) {
-                        $new[2] = $symbol;
-                    } elseif ($new[8] == $symbol) {
-                        $new[0] = $symbol;
-                    }
-                } elseif ($new[0] == $symbol) {
-                    if ($new[1] == null && $new[2] == null) {
-                        $new[2] = $symbol;
-                    } elseif ($new[3] == null && $new[6] == null) {
-                        $new[6] = $symbol;
-                    }
-                } elseif ($new[2] == $symbol) {
-                    if ($new[0] == null && $new[1] == null) {
-                        $new[0] = $symbol;
-                    } elseif ($new[5] == null && $new[8] == null) {
-                        $new[8] = $symbol;
-                    }
-                } elseif ($new[6] == $symbol) {
-                    if ($new[0] == null && $new[3] == null) {
-                        $new[0] = $symbol;
-                    } elseif ($new[7] == null && $new[8] == null) {
-                        $new[8] = $symbol;
-                    }
-                } elseif ($new[8] == $symbol) {
-                    if ($new[2] == null && $new[5] == null) {
-                        $new[2] = $symbol;
-                    } elseif ($new[6] == null && $new[7] == null) {
-                        $new[6] = $symbol;
-                    }
-                }
-            }
-        } elseif ($turn == 5) {
-            if ($new[4] == $symbol) {
-                if ($new[0] != null && $new[0] != $symbol) {
-                    if ($new[7] != null && $new[7] != $symbol) {
-                        $new[2] = $symbol;
-                    } elseif ($new[5] != null && $new[5] != $symbol) {
-                        $new[6] = $symbol;
-                    }
-                } elseif ($new[2] != null && $new[2] != $symbol) {
-                    if ($new[7] != null && $new[7] != $symbol) {
-                        $new[0] = $symbol;
-                    } elseif ($new[3] != null && $new[3] != $symbol) {
-                        $new[8] = $symbol;
-                    }
-                } elseif ($new[6] != null && $new[6] != $symbol) {
-                    if ($new[1] != null && $new[1] != $symbol) {
-                        $new[8] = $symbol;
-                    } elseif ($new[5] != null && $new[5] != $symbol) {
-                        $new[0] = $symbol;
-                    }
-                } elseif ($new[8] != null && $new[8] != $symbol) {
-                    if ($new[1] != null && $new[1] != $symbol) {
-                        $new[6] = $symbol;
-                    } elseif ($new[3] != null && $new[3] != $symbol) {
-                        $new[2] = $symbol;
-                    }
-                }
-            } else {
-                if ($new[0] == $symbol && $new[2] == $symbol) {
-                    if ($new[6] != null) {
-                        $new[8] = $symbol;
-                    } elseif ($new[8] != null) {
-                        $new[6] = $symbol;
-                    } else {
-                        $new[4] = $symbol;
-                    }
-                } elseif ($new[0] == $symbol && $new[6] == $symbol) {
-                    if ($new[2] != null) {
-                        $new[8] = $symbol;
-                    } elseif ($new[8] != null) {
-                        $new[2] = $symbol;
-                    } else {
-                        $new[4] = $symbol;
-                    }
-                } elseif ($new[2] == $symbol && $new[8] == $symbol) {
-                    if ($new[0] != null) {
-                        $new[6] = $symbol;
-                    } elseif ($new[6] != null) {
-                        $new[0] = $symbol;
-                    } else {
-                        $new[4] = $symbol;
-                    }
-                } elseif ($new[6] == $symbol && $new[8] == $symbol) {
-                    if ($new[0] != null) {
-                        $new[2] = $symbol;
-                    } elseif ($new[2] != null) {
-                        $new[0] = $symbol;
-                    } else {
-                        $new[4] = $symbol;
-                    }
-                }
-            }
-        }
-        
-    } else {
-        
-        if ($turn == 2) {
-            if ($new[4] != null) {
-                $new[rand(0, 1) * 2 + rand(0, 1) * 6] = $symbol;
-            } else {
-                $new[4] = $symbol;
-            }
-        } elseif ($turn == 4) {
-            if ($new[4] != null && $new[4] != $symbol) {
-                if ($new[0] == $symbol or $new[8] == $symbol) {
-                    $new[rand(0, 1) * 4 + 2] = $symbol;
-                } elseif ($new[2] == $symbol or $new[6] == $symbol) {
-                    $new[rand(0, 1) * 8] = $symbol;
-                }
-            } elseif ($new[4] == $symbol) {
-                if ($new[0] != null && $new[0] != $symbol && $new[8] != null && $new[8] != $symbol) {
-                    $new[rand(0, 3) * 2 + 1] = $symbol;
-                } elseif ($new[2] != null && $new[2] != $symbol && $new[6] != null && $new[6] != $symbol) {
-                    $new[rand(0, 3) * 2 + 1] = $symbol;
-                } elseif ($new[0] != null && $new[0] != $symbol && $new[8] == null) {
-                    $new[8] = $symbol;
-                } elseif ($new[8] != null && $new[8] != $symbol && $new[0] == null) {
-                    $new[0] = $symbol;
-                } elseif ($new[2] != null && $new[2] != $symbol && $new[6] == null) {
-                    $new[6] = $symbol;
-                } elseif ($new[6] != null && $new[6] != $symbol && $new[2] == null) {
-                    $new[2] = $symbol;
-                } elseif ($new[1] != null && $new[1] != $symbol && $new[7] != null && $new[7] != $symbol) {
-                    $new[rand(0, 1) * 2 + rand(0, 1) * 6] = $symbol;
-                } elseif ($new[3] != null && $new[3] != $symbol && $new[5] != null && $new[5] != $symbol) {
-                    $new[rand(0, 1) * 2 + rand(0, 1) * 6] = $symbol;
-                } elseif ($new[1] != null && $new[1] != $symbol && $new[3] != null && $new[3] != $symbol) {
-                    $new[0] = $symbol;
-                } elseif ($new[1] != null && $new[1] != $symbol && $new[5] != null && $new[5] != $symbol) {
-                    $new[2] = $symbol;
-                } elseif ($new[3] != null && $new[3] != $symbol && $new[7] != null && $new[7] != $symbol) {
-                    $new[6] = $symbol;
-                } elseif ($new[5] != null && $new[5] != $symbol && $new[7] != null && $new[7] != $symbol) {
-                    $new[8] = $symbol;
-                }
-            }
-        }
-        
-    }
-    
-    if ($old == $new) {
-        while ($new == $old) {
-            $i = rand(0, 8);
-            if ($new[$i] == null)
-                $new[$i] = $symbol;
-        }
-    }
-    
-    return $new;    
-}
-
-function forced($grid, $symbol)
+if (empty($winningRow))
 {
-    $winningLines = winningRows();
+    $winningRow = array_fill(0, 3, 9);
+}
 
-    $forcedWin = false;
-    foreach ($winningLines as $winningLine) {
+for ($i = 0; $i <= 8; $i++)
+{
+    (!empty($new[$i]) or $win == 1) ? $readonly[$i] = "readonly" : $readonly[$i] = "";
+    ($winningRow[0] == $i or $winningRow[1] == $i or $winningRow[2] == $i) ? $locked[$i] = "color:#C00000" : $locked[$i] = "color:#8A4B08";
+    if ($winningRow[0] == 10)
+    {
+        $locked[$i] = "color:#006699";
+    }
+}
+
+function noviceMove(&$grid, $playerSymbol)
+{    
+    $symbol = oppositeSymbol($playerSymbol);
+    
+    playRandom($grid, $symbol);
+}
+
+function normalMove(&$grid, $playerSymbol)
+{    
+    $symbol = oppositeSymbol($playerSymbol);
+    
+    if (tryToWin($grid, $symbol))
+    {
+        return;
+    }
+
+    if (tryToBlockWin($grid, $symbol))
+    {
+        return;
+    }
+
+    playRandom($grid, $symbol);   
+}
+
+function geniusMove(&$grid, $turn, $start, $playerSymbol)
+{
+    $symbol = oppositeSymbol($playerSymbol);
+    
+    $old = $grid;
+    
+    if (tryToWin($grid, $symbol))
+    {
+        return;
+    }
+
+    if (tryToBlockWin($grid, $symbol))
+    {
+        return;
+    }
+
+    if (tryToFork($grid, $symbol))
+    {
+        return;
+    }
+
+    if (tryToBlockFork($grid, $symbol))
+    {
+        return;
+    }
+
+    if (tryToPlayCenter($grid, $symbol))
+    {
+        return;
+    }
+
+    if (tryToPlayOppositeCorner($grid, $symbol))
+    {
+        return;
+    }
+
+    if (tryToPlayCorner($grid, $symbol))
+    {
+        return;
+    }
+
+    playRandom($grid, $symbol);
+}
+
+function tryToWin(&$grid, $symbol)
+{
+    $winningMoves = winAvailable($grid, $symbol);
+    if (!empty($winningMoves))
+    {
+        $grid[$winningMoves[rand(0, count($winningMoves) - 1)]] = $symbol;
+        return true;
+    }
+
+    return false;;
+}
+
+function tryToBlockWin(&$grid, $symbol)
+{
+    $opponentSymbol = oppositeSymbol($symbol);
+    $winningMoves = winAvailable($grid, $opponentSymbol);
+    if (!empty($winningMoves))
+    {
+        $grid[$winningMoves[rand(0, count($winningMoves) - 1)]] = $symbol;
+        return true;
+    }
+
+    return false;;
+}
+
+function tryToFork(&$grid, $symbol)
+{
+    for ($i = 0; $i <= 8; $i++)
+    {
+        if (empty($grid[$i]))
+        {
+            $testGrid = $grid;
+            $testGrid[$i] = $symbol;
+            $winningMoves = winAvailable($testGrid, $symbol);
+            if (count($winningMoves) >= 2)
+            {
+                $grid[$i] = $symbol;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function tryToBlockFork(&$grid, $symbol)
+{
+    $opponentSymbol = oppositeSymbol($symbol);
+
+    $blockingMoves = array();
+    for ($i = 0; $i <= 8; $i++)
+    {
+        if (empty($grid[$i]))
+        {
+            $futureGrid = $grid;
+            $futureGrid[$i] = $opponentSymbol;
+            $winningMoves = winAvailable($futureGrid, $opponentSymbol);
+            if (count($winningMoves) >= 2)
+            {
+                $blockingMoves[] = $i;
+            }
+        }
+    }
+
+    // Check if there is only one fork-blocking move
+    if (count($blockingMoves) == 1)
+    {
+        $grid[$blockingMoves[0]] = $symbol;
+        return true;
+    }
+
+    // Check if there is a fork-blocking move that also creates a favorable fork
+    foreach ($blockingMoves as $blockingMove)
+    {
+        $futureGrid = $grid;
+        $futureGrid[$blockingMove] = $symbol;
+        $winningMoves = winAvailable($futureGrid, $symbol);
+        if (count($winningMoves) >= 2)
+        {
+            $grid[$blockingMove] = $symbol;
+            return true;
+        }
+    }
+
+    // Settle for a fork-blocking move that doesn't result in another fork
+    foreach ($blockingMoves as $blockingMove)
+    {
+        $futureGrid = $grid;
+        $futureGrid[$blockingMove] = $symbol;
+        if (tryToBlockWin($futureGrid, $opponentSymbol))
+        {
+            $winningMoves = winAvailable($futureGrid, $opponentSymbol);
+            if (count($winningMoves) < 2)
+            {
+                echo "hey";
+                $grid[$blockingMove] = $symbol;
+                return true;
+            }
+        }
+        else 
+        {
+            if (!tryToFork($futureGrid))
+            {
+                echo "buddy";
+                $grid[$blockingMove] = $symbol;
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function tryToPlayCenter(&$grid, $symbol)
+{
+    if (empty($grid[4]))
+    {
+        $grid[4] = $symbol;
+        return true;
+    }
+
+    return false;
+}
+
+function tryToPlayOppositeCorner(&$grid, $symbol)
+{
+    $opponentSymbol = oppositeSymbol($symbol);
+    $oppositeCorners = oppositeCorners();
+    foreach ($oppositeCorners as $oppositeCorner)
+    {
+        if ($grid[$oppositeCorner[0]] == $opponentSymbol && empty($grid[$oppositeCorner[1]]))
+        {
+            $grid[$oppositeCorner[1]] = $symbol;
+            return true;
+        }
+        else if (empty($grid[$oppositeCorner[0]]) && $grid[$oppositeCorner[1]] == $opponentSymbol)
+        {
+            $grid[$oppositeCorner[0]] = $symbol;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function tryToPlayCorner(&$grid, $symbol)
+{
+    $corners = array(0, 2, 6, 8);
+    while (!empty($corners))
+    {
+        $i = rand(0, count($corners) - 1);
+
+        if (empty($grid[$corners[$i]]))
+        {
+            $grid[$corners[$i]] = $symbol;
+            return true;
+        }
+
+        unset($corners[$i]);
+        $corners = array_values($corners);
+    }
+
+    return false;
+}
+
+function playRandom(&$grid, $symbol)
+{
+    if ((array_count_values($grid)[''] ?? 0) == 0)
+    {
+        return;
+    }
+
+    $index = rand(0, 8);
+    while (!empty($grid[$index]))
+    {
+        $index = rand(0, 8);
+    }
+    $grid[$index] = $symbol;
+}
+
+function winAvailable($grid, $symbol)
+{
+    $gridRows = gridRows();
+    $winningMoves = array();
+
+    foreach ($gridRows as $gridRow)
+    {
         $gridLine = array(
-            $grid[$winningLine[0]] ?? '',
-            $grid[$winningLine[1]] ?? '',
-            $grid[$winningLine[2]] ?? ''
+            $grid[$gridRow[0]] ?? '',
+            $grid[$gridRow[1]] ?? '',
+            $grid[$gridRow[2]] ?? ''
         );
 
-        if ((array_count_values($gridLine)[$symbol] ?? 0) == 2 && (array_count_values($gridLine)[''] ?? 0) == 1) {
-            $grid[$winningLine[array_search('', $gridLine)]] = $symbol;
-            $forcedWin = true;
-            break;
+        if ((array_count_values($gridLine)[$symbol] ?? 0) == 2 && (array_count_values($gridLine)[''] ?? 0) == 1)
+        {
+            $winningMoves[] = $gridRow[array_search('', $gridLine)];
         }
     }
 
-    return array(
-        $grid,
-        $forcedWin
-    );
+    return $winningMoves;
 }
 
-function check_win($grid, $symbol)
+function checkWin($grid, $symbol)
 {
-    $winningLines = winningRows();
+    $gridRows = gridRows();
 
     $winningRow = array();
     $win = 0;
-    foreach ($winningLines as $winningLine) {
+    foreach ($gridRows as $gridRow)
+    {
         $gridLine = array(
-            $grid[$winningLine[0]] ?? '',
-            $grid[$winningLine[1]] ?? '',
-            $grid[$winningLine[2]] ?? ''
+            $grid[$gridRow[0]] ?? '',
+            $grid[$gridRow[1]] ?? '',
+            $grid[$gridRow[2]] ?? ''
         );
 
         if (max($gridLine) != '' && array_count_values($gridLine)[max($gridLine)] == 3)
         {
-            $winningRow = $winningLine;
+            $winningRow = $gridRow;
             break;
         }
     }
     
-    if (!empty($winningRow)) {
-        ($new[$winningRow[0]] == $symbol) ? $win = 1 : $win = 2;
+    if (!empty($winningRow))
+    {
+        ($grid[$winningRow[0]] == $symbol) ? $win = 1 : $win = 2;
     }
     
-    if ($win == 0 && (array_count_values($grid)[null] ?? 0) == 0)
+    if ($win == 0 && (array_count_values($grid)[''] ?? 0) == 0)
     {
         $win = 3;
         $winningRow = array_fill(0, 3, 10);
@@ -449,7 +498,7 @@ function check_win($grid, $symbol)
     );    
 }
 
-function winningRows()
+function gridRows()
 {
     return array(
         array(0, 1, 2),
@@ -461,6 +510,19 @@ function winningRows()
         array(2, 4, 6),
         array(0, 4, 8)
     );
+}
+
+function oppositeCorners()
+{
+    return array(
+        array(0, 8),
+        array(2, 6)
+    );
+}
+
+function oppositeSymbol($symbol)
+{
+    return $symbol == 'X' ? 'O' : 'X';
 }
 
 ?>
