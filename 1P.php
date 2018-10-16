@@ -308,19 +308,6 @@ function tryToBlockFork(&$grid, $symbol)
         return true;
     }
 
-    // Check if there is a fork-blocking move that also creates a favorable fork
-    foreach ($blockingMoves as $blockingMove)
-    {
-        $futureGrid = $grid;
-        $futureGrid[$blockingMove] = $symbol;
-        $winningMoves = winAvailable($futureGrid, $symbol);
-        if (count($winningMoves) >= 2)
-        {
-            $grid[$blockingMove] = $symbol;
-            return true;
-        }
-    }
-
     // Check if there is a fork-blocking move that doesn't result in another fork
     foreach ($blockingMoves as $blockingMove)
     {
