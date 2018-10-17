@@ -205,15 +205,9 @@ function normalMove(&$grid, $playerSymbol)
 {    
     $symbol = oppositeSymbol($playerSymbol);
     
-    if (tryToWin($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToWin($grid, $symbol)) return;
 
-    if (tryToBlockWin($grid, $symbol))
-    {
-        return;
-    }
+    if (tryToBlockWin($grid, $symbol)) return;
 
     playRandom($grid, $symbol);   
 }
@@ -252,7 +246,7 @@ function tryToWin(&$grid, $symbol)
         return true;
     }
 
-    return false;;
+    return false;
 }
 
 function tryToBlockWin(&$grid, $symbol)
@@ -265,7 +259,7 @@ function tryToBlockWin(&$grid, $symbol)
         return true;
     }
 
-    return false;;
+    return false;
 }
 
 function tryToFork(&$grid, $symbol)
