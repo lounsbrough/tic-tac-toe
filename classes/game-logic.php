@@ -190,7 +190,7 @@ class GameLogic
 
     private function tryToPlayCorner(&$grid, $symbol)
     {
-        $corners = array(0, 2, 6, 8);
+        $corners = $this->corners();
         while (!empty($corners))
         {
             $i = rand(0, count($corners) - 1);
@@ -300,6 +300,11 @@ class GameLogic
             array(2, 4, 6),
             array(0, 4, 8)
         );
+    }
+
+    private function corners()
+    {
+        return array(0, 2, 6, 8);
     }
 
     private function oppositeCorners()

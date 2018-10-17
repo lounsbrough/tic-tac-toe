@@ -2,15 +2,7 @@
 <html>
 <body>
 
-<style>
-html { 
-    background: url(assets/background.jpg) center center fixed; 
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-}
-</style>
+<link rel="stylesheet" href="css/tictactoe.css">
 
 <!-- Background Image and Title -->
 
@@ -53,8 +45,8 @@ if (!isset($_GET['go']))
     }
 }
 
-$diffcheck = array_fill(0, 3, '');
-$diffcheck[$difficulty] = 'checked';
+$difficultyCheck = array_fill(0, 3, '');
+$difficultyCheck[$difficulty] = 'checked';
 
 $symbolcheck = array_fill(0, 2, '');
 $symbol == 'X' ? $symbolcheck[0] = 'checked' : $symbolcheck[1] = 'checked';
@@ -203,36 +195,26 @@ for ($i = 0; $i <= 8; $i++)
 
 <div style="position: absolute; left: 30%; top: 200px; z-index: 0">
 
-<style type="text/css">
-
-#board input {width:150px;height:150px;font-size:100px;text-align:center;border:none;background:none;}
-
-.go {position:absolute;right:5%;top:411px;font-size:45px;border:none;background:none;color:#990000}
-.clear {position:absolute;right:5%;top:850px;font-size:25px;border:none;background:none;color:#990000}
-.game-mode {font-size:25px;color:#990000}
-
-</style>
-
 <!-- Input Fields - Old and New -->
 
 <form action="1P.php" method="get" autocomplete="off">
 
-<table id="board" border="0" style="border-collapse:collapse;border:none;">
-<tr style = "border-bottom:5px solid #DF7401">
-<td style = "border-right:5px solid #DF7401"><input style='<?= $locked[0]; ?>' <?= $readonly[0]; ?> type="text" name="new1" value='<?= $new[0]; ?>' maxlength="1"></td>
-<td style = "border-right:5px solid #DF7401"><input style='<?= $locked[1]; ?>' <?= $readonly[1]; ?> type="text" name="new2" value='<?= $new[1]; ?>' maxlength="1"></td>
-<td><input style='<?= $locked[2]; ?>' <?= $readonly[2]; ?> type="text" name="new3" value='<?= $new[2]; ?>' maxlength="1"></td>
-</tr>
-<tr style = "border-bottom:5px solid #DF7401">
-<td style = "border-right:5px solid #DF7401"><input style='<?= $locked[3]; ?>' <?= $readonly[3]; ?> type="text" name="new4" value='<?= $new[3]; ?>' maxlength="1"></td>
-<td style = "border-right:5px solid #DF7401"><input style='<?= $locked[4]; ?>' <?= $readonly[4]; ?> type="text" name="new5" value='<?= $new[4]; ?>' maxlength="1"></td> 
-<td><input style='<?= $locked[5]; ?>' <?= $readonly[5]; ?> type="text" name="new6" value='<?= $new[5]; ?>' maxlength="1"></td>
-</tr>
-<tr>
-<td style = "border-right:5px solid #DF7401"><input style='<?= $locked[6]; ?>' <?= $readonly[6]; ?> type="text" name="new7" value='<?= $new[6]; ?>' maxlength="1"></td>
-<td style = "border-right:5px solid #DF7401"><input style='<?= $locked[7]; ?>' <?= $readonly[7]; ?> type="text" name="new8" value='<?= $new[7]; ?>' maxlength="1"></td>
-<td><input style='<?= $locked[8]; ?>' <?= $readonly[8]; ?> type="text" name="new9" value='<?= $new[8]; ?>' maxlength="1"></td>
-</tr>
+<table id="game-board">
+    <tr>
+        <td><input style='<?= $locked[0]; ?>' <?= $readonly[0]; ?> type="text" name="new1" value='<?= $new[0]; ?>' maxlength="1"></td>
+        <td><input style='<?= $locked[1]; ?>' <?= $readonly[1]; ?> type="text" name="new2" value='<?= $new[1]; ?>' maxlength="1"></td>
+        <td><input style='<?= $locked[2]; ?>' <?= $readonly[2]; ?> type="text" name="new3" value='<?= $new[2]; ?>' maxlength="1"></td>
+    </tr>
+    <tr>
+        <td><input style='<?= $locked[3]; ?>' <?= $readonly[3]; ?> type="text" name="new4" value='<?= $new[3]; ?>' maxlength="1"></td>
+        <td><input style='<?= $locked[4]; ?>' <?= $readonly[4]; ?> type="text" name="new5" value='<?= $new[4]; ?>' maxlength="1"></td> 
+        <td><input style='<?= $locked[5]; ?>' <?= $readonly[5]; ?> type="text" name="new6" value='<?= $new[5]; ?>' maxlength="1"></td>
+    </tr>
+    <tr>
+        <td><input style='<?= $locked[6]; ?>' <?= $readonly[6]; ?> type="text" name="new7" value='<?= $new[6]; ?>' maxlength="1"></td>
+        <td><input style='<?= $locked[7]; ?>' <?= $readonly[7]; ?> type="text" name="new8" value='<?= $new[7]; ?>' maxlength="1"></td>
+        <td><input style='<?= $locked[8]; ?>' <?= $readonly[8]; ?> type="text" name="new9" value='<?= $new[8]; ?>' maxlength="1"></td>
+    </tr>
 </table>
 
 </div>
@@ -254,59 +236,53 @@ for ($i = 0; $i <= 8; $i++)
 
 <!-- Difficulty Settings -->
 
-<div style="position: absolute; left: 50px; top: 250px; z-index: 0; font-size: 23px">
-<table>
-<tr><td style = "color:#006699">Novice</td><td style = "padding:10px">
-<input type="radio" name="difficulty" value=0 <?= $diffcheck[0] ?>>
-</td></tr>
-<tr><td style = "color:white">Normal</td><td style = "padding:10px">
-<input type="radio" name="difficulty" value=1 <?= $diffcheck[1] ?>>
-</td></tr>
-<tr><td style = "color:#C00000">Genius</td><td style = "padding:10px">
-<input type="radio" name="difficulty" value=2 <?= $diffcheck[2] ?>>
-</td></tr>
-</table>
+<div style="position: absolute; left: 50px; top: 250px; z-index: 0">
+    <div>
+        <span class="novice-mode">Novice</span>
+        <span><input type="radio" name="difficulty" value=0 <?= $difficultyCheck[0] ?>></span>
+    </div>
+    <div>
+        <span class="normal-mode">Normal</span>
+        <span><input type="radio" name="difficulty" value=1 <?= $difficultyCheck[1] ?>></span>
+    </div>
+    <div>
+        <span class="genius-mode">Genius</span>
+        <span><input type="radio" name="difficulty" value=2 <?= $difficultyCheck[2] ?>></span>
+    </div>
 </div>
 
 <!-- Play As 'X' Or 'O' -->
 
-<div style="position: absolute; left: 50px; top: 450px; z-index: 0; font-size: 23px">
-<table>
-<tr><td style = "white-space:nowrap;color:white">Play As X</td><td style = "padding:10px">
-<input <?= $disabled ?> type="radio" name="symboldsp" value='X' <?= $symbolcheck[0] ?>>
-</td></tr>
-<tr><td style = "white-space:nowrap;color:white">Play As O</td><td style = "padding:10px">
-<input <?= $disabled ?> type="radio" name="symboldsp" value='O' <?= $symbolcheck[1] ?>>
-</td></tr>
-</table>
-<input type="hidden" name="symbolhidden" value='<?= $symbolcheck[0]; ?>'>
+<div style="position: absolute; left: 50px; top: 450px; z-index: 0; white-space: nowrap; color: white">
+    <div>
+        <span>Play As X</span>
+        <span><input <?= $disabled ?> type="radio" name="symboldsp" value='X' <?= $symbolcheck[0] ?>></span>
+    </div>
+    <div>
+        <span>Play As O</span>
+        <span><input <?= $disabled ?> type="radio" name="symboldsp" value='O' <?= $symbolcheck[1] ?>></span>
+    </div>
+    <input type="hidden" name="symbolhidden" value='<?= $symbolcheck[0]; ?>'>
 </div>
 
 <!-- Player Start Or Computer Start -->
 
-<div style="position: absolute; left: 50px; top: 600px; z-index: 0; font-size: 23px">
-<table>
-<tr><td style = "white-space:nowrap;color:white">Player Start?</td><td style = "padding:10px">
-<input <?= $disabled ?> type="checkbox" name="startdsp" value='<?= $startcheck; ?>'>
-</td></tr>
-</table>
-<input type="hidden" name="start" value='<?= $startcheck; ?>'>
+<div style="position: absolute; left: 50px; top: 600px; z-index: 0">
+    <span>Player Start?</span>
+    <span><input <?= $disabled ?> type="checkbox" name="startdsp" value='<?= $startcheck; ?>'></span>
+    <input type="hidden" name="start" value='<?= $startcheck; ?>'>
 </div>
 
 <!-- Error Message Field -->
 
-<table border="0" style="position: absolute; left: 50px; top: 725px; font-size:30px">
-<tr>
-<td style = "color:#990000"><?= $errmsg; ?></td>
-</tr>
-</table>
+<div id="message-div" style="position: absolute; left: 50px; top: 725px"><?= $errmsg; ?></div>
 
 </form>
 
 <!-- Go To 2 Player Game -->
 
-<div style = "position: absolute; left: 50px; top: 852px; z-index: 20; font-size: 25px">
-<a href="2P.php"><button style = "color:#990000;border:none;background:none" class="game-mode">2 Player Game</button></a>
+<div style = "position: absolute; left: 50px; top: 852px">
+<a href="2P.php" class="game-mode">2 Player Game</a>
 </div>
 
 </body>

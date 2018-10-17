@@ -1,0 +1,72 @@
+html {
+	background: url(../assets/background.jpg) center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+body {
+    font-size: 23px;
+    white-space: nowrap;
+    color: white;
+}
+
+#game-board {
+    border-collapse: collapse;
+    border: none;
+}
+
+#game-board input {
+	width: 150px;
+	height: 150px;
+	font-size: 100px;
+	text-align: center;
+	border: none;
+	background: none;
+}
+
+#game-board tr:nth-of-type(-n+2) {
+    border-bottom: 5px solid #DF7401;
+}
+
+#game-board tr td:nth-of-type(-n+2) {
+    border-right: 5px solid #DF7401;
+}
+
+.go {
+	position: absolute;
+	right: 5%;
+	top: 411px;
+	font-size: 45px;
+	border: none;
+	background: none;
+	color: #990000
+}
+
+.clear {
+	position: absolute;
+	right: 5%;
+	top: 850px;
+	font-size: 25px;
+	border: none;
+	background: none;
+	color: #990000
+}
+
+.game-mode {
+	font-size: 25px;
+	color: #990000
+}
+
+.novice-mode {
+    color: #006699;
+}
+
+.genius-mode {
+    color: #C00000;
+}
+
+#message-div {
+    color: #990000;
+}
