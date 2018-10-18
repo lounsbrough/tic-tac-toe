@@ -2,18 +2,22 @@
 <html>
 <body>
 
+<script src="assets/bootstrap/jquery-3.3.1.slim.min.js"></script>
+<script src="assets/bootstrap/popper.min.js"></script>
+
+<link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
+<script src="assets/bootstrap/bootstrap.min.js"></script>
+
 <link rel="stylesheet" href="css/tictactoe.css">
 
 <!-- Background Image and Title -->
 
-<div style = "position:absolute; left:0px; top:0px; z-index:0">
-<img src='assets/title.png' height="200px" width="400px">
+<!-- <div style = "position:absolute; left:0px; top:0px; z-index:0">
+    <img src='assets/title.png' height="200px" width="400px">
 </div>
 <div style = "position:absolute; right:5%; top:60px; z-index:0">
-<img src='assets/credit.png' height="70px" width="300px">
-</div>
-
-<div style="position: absolute; top: 350px; z-index: 10">
+    <img src='assets/credit.png' height="70px" width="300px">
+</div> -->
 
 <!-- PHP Code -->
 
@@ -39,7 +43,9 @@ if (!isset($_GET['go']))
     {
         $symbol = $_GET['symboldsp'];
         $start = isset($_GET['startdsp']) ? 'checked' : '';
-    } else {
+    }
+    else
+    {
         $symbol = $_GET['symbolhidden'] == 'checked' ? 'X' : 'O';
         $start = $_GET['start'];
     }
@@ -67,10 +73,9 @@ $win = (!isset($_GET['win'])) ? 0 : $_GET['win'];
 
 if (isset($_GET['go']))
 {
-    $invchar = preg_match("/[^XO]/i", implode($new)) ? 1 : 0;
-    if ($invchar == 0)
+    if (!preg_match("/[^XO]/i", implode($new)))
     {
-        $chgcount = 0;
+        $changedCount = 0;
         for ($i = 0; $i <= 8; $i++)
         {
             if ($old[$i] != $new[$i])
@@ -79,14 +84,16 @@ if (isset($_GET['go']))
                 {
                     $errmsg = "Please Mark '$symbol'";
                 }
-                $chgcount++;
+                $changedCount++;
             }
         }
-        if ($chgcount != 1 && $win != 1)
+        if ($changedCount != 1 && $win != 1)
         {
             $errmsg = 'Mark Exactly One Box';
         }
-    } else {
+    }
+    else
+    {
         $errmsg = "Please Mark '$symbol'";
     }
 }
@@ -181,8 +188,8 @@ if (empty($winningRow))
 
 for ($i = 0; $i <= 8; $i++)
 {
-    (!empty($new[$i]) or $win == 1) ? $readonly[$i] = "readonly" : $readonly[$i] = "";
-    ($winningRow[0] == $i or $winningRow[1] == $i or $winningRow[2] == $i) ? $locked[$i] = "color:#C00000" : $locked[$i] = "color:#8A4B08";
+    (!empty($new[$i]) || $win == 1) ? $readonly[$i] = "readonly" : $readonly[$i] = "";
+    ($winningRow[0] == $i || $winningRow[1] == $i || $winningRow[2] == $i) ? $locked[$i] = "color:#C00000" : $locked[$i] = "color:#8A4B08";
     if ($winningRow[0] == 10)
     {
         $locked[$i] = "color:#006699";
@@ -191,32 +198,95 @@ for ($i = 0; $i <= 8; $i++)
 
 ?>
 
-</div>
-
-<div style="position: absolute; left: 30%; top: 200px; z-index: 0">
-
-<!-- Input Fields - Old and New -->
-
 <form action="1P.php" method="get" autocomplete="off">
 
-<table id="game-board">
-    <tr>
-        <td><input style='<?= $locked[0]; ?>' <?= $readonly[0]; ?> type="text" name="new1" value='<?= $new[0]; ?>' maxlength="1"></td>
-        <td><input style='<?= $locked[1]; ?>' <?= $readonly[1]; ?> type="text" name="new2" value='<?= $new[1]; ?>' maxlength="1"></td>
-        <td><input style='<?= $locked[2]; ?>' <?= $readonly[2]; ?> type="text" name="new3" value='<?= $new[2]; ?>' maxlength="1"></td>
-    </tr>
-    <tr>
-        <td><input style='<?= $locked[3]; ?>' <?= $readonly[3]; ?> type="text" name="new4" value='<?= $new[3]; ?>' maxlength="1"></td>
-        <td><input style='<?= $locked[4]; ?>' <?= $readonly[4]; ?> type="text" name="new5" value='<?= $new[4]; ?>' maxlength="1"></td> 
-        <td><input style='<?= $locked[5]; ?>' <?= $readonly[5]; ?> type="text" name="new6" value='<?= $new[5]; ?>' maxlength="1"></td>
-    </tr>
-    <tr>
-        <td><input style='<?= $locked[6]; ?>' <?= $readonly[6]; ?> type="text" name="new7" value='<?= $new[6]; ?>' maxlength="1"></td>
-        <td><input style='<?= $locked[7]; ?>' <?= $readonly[7]; ?> type="text" name="new8" value='<?= $new[7]; ?>' maxlength="1"></td>
-        <td><input style='<?= $locked[8]; ?>' <?= $readonly[8]; ?> type="text" name="new9" value='<?= $new[8]; ?>' maxlength="1"></td>
-    </tr>
-</table>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+        
+            <!-- Difficulty Settings -->
 
+            <div>
+                <div>
+                    <span class="novice-mode">Novice</span>
+                    <span><input type="radio" name="difficulty" value=0 <?= $difficultyCheck[0] ?>></span>
+                </div>
+                <div>
+                    <span class="normal-mode">Normal</span>
+                    <span><input type="radio" name="difficulty" value=1 <?= $difficultyCheck[1] ?>></span>
+                </div>
+                <div>
+                    <span class="genius-mode">Genius</span>
+                    <span><input type="radio" name="difficulty" value=2 <?= $difficultyCheck[2] ?>></span>
+                </div>
+            </div>
+
+            <!-- Play As 'X' Or 'O' -->
+
+            <div>
+                <div>
+                    <span>Play As X</span>
+                    <span><input <?= $disabled ?> type="radio" name="symboldsp" value='X' <?= $symbolcheck[0] ?>></span>
+                </div>
+                <div>
+                    <span>Play As O</span>
+                    <span><input <?= $disabled ?> type="radio" name="symboldsp" value='O' <?= $symbolcheck[1] ?>></span>
+                </div>
+                <input type="hidden" name="symbolhidden" value='<?= $symbolcheck[0]; ?>'>
+            </div>
+
+            <!-- Player Start Or Computer Start -->
+
+            <div>
+                <span>Player Start?</span>
+                <span><input <?= $disabled ?> type="checkbox" name="startdsp" value='<?= $startcheck; ?>'></span>
+                <input type="hidden" name="start" value='<?= $startcheck; ?>'>
+            </div>
+
+            <!-- Error Message Field -->
+
+            <div id="message-div"><?= $errmsg; ?></div>
+
+            <!-- Go To 2 Player Game -->
+
+            <div>
+                <a href="2P.php" class="game-mode">2 Player Game</a>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+
+            <!-- Input Fields - Old and New -->
+
+            <table id="game-board" class="mx-auto text-center">
+                <tr>
+                    <td><input style='<?= $locked[0]; ?>' <?= $readonly[0]; ?> type="text" name="new1" value='<?= $new[0]; ?>' maxlength="1"></td>
+                    <td><input style='<?= $locked[1]; ?>' <?= $readonly[1]; ?> type="text" name="new2" value='<?= $new[1]; ?>' maxlength="1"></td>
+                    <td><input style='<?= $locked[2]; ?>' <?= $readonly[2]; ?> type="text" name="new3" value='<?= $new[2]; ?>' maxlength="1"></td>
+                </tr>
+                <tr>
+                    <td><input style='<?= $locked[3]; ?>' <?= $readonly[3]; ?> type="text" name="new4" value='<?= $new[3]; ?>' maxlength="1"></td>
+                    <td><input style='<?= $locked[4]; ?>' <?= $readonly[4]; ?> type="text" name="new5" value='<?= $new[4]; ?>' maxlength="1"></td> 
+                    <td><input style='<?= $locked[5]; ?>' <?= $readonly[5]; ?> type="text" name="new6" value='<?= $new[5]; ?>' maxlength="1"></td>
+                </tr>
+                <tr>
+                    <td><input style='<?= $locked[6]; ?>' <?= $readonly[6]; ?> type="text" name="new7" value='<?= $new[6]; ?>' maxlength="1"></td>
+                    <td><input style='<?= $locked[7]; ?>' <?= $readonly[7]; ?> type="text" name="new8" value='<?= $new[7]; ?>' maxlength="1"></td>
+                    <td><input style='<?= $locked[8]; ?>' <?= $readonly[8]; ?> type="text" name="new9" value='<?= $new[8]; ?>' maxlength="1"></td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="col-md-3">
+            <div class="text-right">
+                <input type="submit" name="go" value="GO" class="go">
+            </div>
+            <div class="text-right">
+                <input type="submit" name="clear" value="Start Over" class="clear">
+            </div>
+
+        </div>
+    </div>
 </div>
 
 <input type="hidden" name="old1" value='<?= $old[0]; ?>'>
@@ -231,59 +301,7 @@ for ($i = 0; $i <= 8; $i++)
 <input type="hidden" name="turn" value='<?= $turn; ?>'>
 <input type="hidden" name="win" value='<?= $win; ?>'>
 
-<input type="submit" name="go" value="GO" class="go">
-<input type="submit" name="clear" value="Start Over" class="clear">
-
-<!-- Difficulty Settings -->
-
-<div style="position: absolute; left: 50px; top: 250px; z-index: 0">
-    <div>
-        <span class="novice-mode">Novice</span>
-        <span><input type="radio" name="difficulty" value=0 <?= $difficultyCheck[0] ?>></span>
-    </div>
-    <div>
-        <span class="normal-mode">Normal</span>
-        <span><input type="radio" name="difficulty" value=1 <?= $difficultyCheck[1] ?>></span>
-    </div>
-    <div>
-        <span class="genius-mode">Genius</span>
-        <span><input type="radio" name="difficulty" value=2 <?= $difficultyCheck[2] ?>></span>
-    </div>
-</div>
-
-<!-- Play As 'X' Or 'O' -->
-
-<div style="position: absolute; left: 50px; top: 450px; z-index: 0; white-space: nowrap; color: white">
-    <div>
-        <span>Play As X</span>
-        <span><input <?= $disabled ?> type="radio" name="symboldsp" value='X' <?= $symbolcheck[0] ?>></span>
-    </div>
-    <div>
-        <span>Play As O</span>
-        <span><input <?= $disabled ?> type="radio" name="symboldsp" value='O' <?= $symbolcheck[1] ?>></span>
-    </div>
-    <input type="hidden" name="symbolhidden" value='<?= $symbolcheck[0]; ?>'>
-</div>
-
-<!-- Player Start Or Computer Start -->
-
-<div style="position: absolute; left: 50px; top: 600px; z-index: 0">
-    <span>Player Start?</span>
-    <span><input <?= $disabled ?> type="checkbox" name="startdsp" value='<?= $startcheck; ?>'></span>
-    <input type="hidden" name="start" value='<?= $startcheck; ?>'>
-</div>
-
-<!-- Error Message Field -->
-
-<div id="message-div" style="position: absolute; left: 50px; top: 725px"><?= $errmsg; ?></div>
-
 </form>
-
-<!-- Go To 2 Player Game -->
-
-<div style = "position: absolute; left: 50px; top: 852px">
-<a href="2P.php" class="game-mode">2 Player Game</a>
-</div>
 
 </body>
 </html>

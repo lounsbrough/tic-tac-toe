@@ -1,15 +1,12 @@
-html {
+body {
+    font-size: 23px;
+    white-space: nowrap;
+	color: white;
 	background: url(../assets/background.jpg) center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-}
-
-body {
-    font-size: 23px;
-    white-space: nowrap;
-    color: white;
 }
 
 #game-board {
@@ -35,9 +32,6 @@ body {
 }
 
 .go {
-	position: absolute;
-	right: 5%;
-	top: 411px;
 	font-size: 45px;
 	border: none;
 	background: none;
@@ -45,9 +39,6 @@ body {
 }
 
 .clear {
-	position: absolute;
-	right: 5%;
-	top: 850px;
 	font-size: 25px;
 	border: none;
 	background: none;
