@@ -9,6 +9,14 @@ body {
 	background-size: cover;
 }
 
+.navbar {
+	padding: 0px;
+}
+
+.navbar-brand {
+	font-size: 40px;
+}
+
 #game-board {
     border-collapse: collapse;
     border: none;

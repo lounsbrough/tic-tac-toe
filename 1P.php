@@ -198,11 +198,15 @@ for ($i = 0; $i <= 8; $i++)
 
 ?>
 
+<nav class="navbar navbar-dark bg-dark mb-5">
+    <span class="navbar-brand mb-0 h1 mx-auto text-center">TicTacToe</span>
+</nav>
+
 <form action="1P.php" method="get" autocomplete="off">
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 mb-5 text-sm-center text-md-left">
         
             <!-- Difficulty Settings -->
 
@@ -254,7 +258,7 @@ for ($i = 0; $i <= 8; $i++)
             </div>
 
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 mb-5 text-sm-center">
 
             <!-- Input Fields - Old and New -->
 
@@ -277,11 +281,11 @@ for ($i = 0; $i <= 8; $i++)
             </table>
 
         </div>
-        <div class="col-md-3">
-            <div class="text-right">
+        <div class="col-md-3 mb-5 text-sm-center text-md-right">
+            <div>
                 <input type="submit" name="go" value="GO" class="go">
             </div>
-            <div class="text-right">
+            <div>
                 <input type="submit" name="clear" value="Start Over" class="clear">
             </div>
 
