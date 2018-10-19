@@ -7,21 +7,17 @@
 
 <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
 <script src="assets/bootstrap/bootstrap.min.js"></script>
+<link rel="stylesheet" href="css/btn3d.css">
 
 <link rel="stylesheet" href="css/tictactoe.css">
-
-<!-- Background Image and Title -->
-
-<!-- <div style = "position:absolute; left:0px; top:0px; z-index:0">
-    <img src='assets/title.png' height="200px" width="400px">
-</div>
-<div style = "position:absolute; right:5%; top:60px; z-index:0">
-    <img src='assets/credit.png' height="70px" width="300px">
-</div> -->
+<script src="js/tictactoe.js"></script>
 
 <!-- PHP Code -->
 
 <?PHP
+
+$new = array_fill(0, 9, 'X');
+$gridValues = array_fill(0, 9, 'X');
 
 require_once dirname(__FILE__).'/classes/game-logic.php';
 $gameLogic = new GameLogic();
@@ -206,89 +202,94 @@ for ($i = 0; $i <= 8; $i++)
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3 mb-5 text-sm-center text-md-left">
-        
-            <!-- Difficulty Settings -->
 
-            <div>
-                <div>
-                    <span class="novice-mode">Novice</span>
-                    <span><input type="radio" name="difficulty" value=0 <?= $difficultyCheck[0] ?>></span>
+        <div class="col-md-12 col-lg-3 order-2 order-lg-1 mb-5 text-md-center text-lg-left control-row">
+
+            <div class="row">
+
+                <div class="col-sm-4 col-lg-12 text-sm-center">
+
+                    <div class="btn-group">
+                        <button id="difficulty-selected-button" type="button" class="btn btn-light difficulty-dropdown">Novice</button>
+                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split difficulty-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item difficulty-option" data-difficulty="Novice" href="#">Novice</a>
+                            <a class="dropdown-item difficulty-option" data-difficulty="Normal" href="#">Normal</a>
+                            <a class="dropdown-item difficulty-option" data-difficulty="Genius" href="#">Genius</a>
+                        </div>
+                    </div>
+
                 </div>
-                <div>
-                    <span class="normal-mode">Normal</span>
-                    <span><input type="radio" name="difficulty" value=1 <?= $difficultyCheck[1] ?>></span>
+                <div class="col-sm-3 col-lg-12 text-sm-center">
+
+                    <div class="btn-group">
+                        <button id="symbol-selected-button" type="button" class="btn btn-light symbol-dropdown">X</button>
+                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split symbol-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item symbol-option" data-symbol="X" href="#">X</a>
+                            <a class="dropdown-item symbol-option" data-symbol="O" href="#">O</a>
+                        </div>
+                    </div>
+
                 </div>
-                <div>
-                    <span class="genius-mode">Genius</span>
-                    <span><input type="radio" name="difficulty" value=2 <?= $difficultyCheck[2] ?>></span>
+                <div class="col-sm-5 col-lg-12 text-sm-center">
+
+                    <div class="btn-group">
+                        <button id="player-start-selected-button" type="button" class="btn btn-light player-start-dropdown">Player Start</button>
+                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split player-start-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item player-start-option" data-symbol="Player Start" href="#">Player Start</a>
+                            <a class="dropdown-item player-start-option" data-symbol="Computer Start" href="#">Computer Start</a>
+                        </div>
+                    </div>
+
                 </div>
+
             </div>
-
-            <!-- Play As 'X' Or 'O' -->
-
-            <div>
-                <div>
-                    <span>Play As X</span>
-                    <span><input <?= $disabled ?> type="radio" name="symboldsp" value='X' <?= $symbolcheck[0] ?>></span>
-                </div>
-                <div>
-                    <span>Play As O</span>
-                    <span><input <?= $disabled ?> type="radio" name="symboldsp" value='O' <?= $symbolcheck[1] ?>></span>
-                </div>
-                <input type="hidden" name="symbolhidden" value='<?= $symbolcheck[0]; ?>'>
-            </div>
-
-            <!-- Player Start Or Computer Start -->
-
-            <div>
-                <span>Player Start?</span>
-                <span><input <?= $disabled ?> type="checkbox" name="startdsp" value='<?= $startcheck; ?>'></span>
-                <input type="hidden" name="start" value='<?= $startcheck; ?>'>
-            </div>
-
-            <!-- Error Message Field -->
 
             <div id="message-div"><?= $errmsg; ?></div>
 
-            <!-- Go To 2 Player Game -->
-
-            <div>
-                <a href="2P.php" class="game-mode">2 Player Game</a>
-            </div>
-
         </div>
-        <div class="col-md-6 mb-5 text-sm-center">
 
-            <!-- Input Fields - Old and New -->
+        <div class="col-md-12 col-lg-6 order-1 order-lg-2 mb-5 text-sm-center">
 
             <table id="game-board" class="mx-auto text-center">
                 <tr>
-                    <td><input style='<?= $locked[0]; ?>' <?= $readonly[0]; ?> type="text" name="new1" value='<?= $new[0]; ?>' maxlength="1"></td>
-                    <td><input style='<?= $locked[1]; ?>' <?= $readonly[1]; ?> type="text" name="new2" value='<?= $new[1]; ?>' maxlength="1"></td>
-                    <td><input style='<?= $locked[2]; ?>' <?= $readonly[2]; ?> type="text" name="new3" value='<?= $new[2]; ?>' maxlength="1"></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[0] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[1] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[2] ?></button></td>
                 </tr>
                 <tr>
-                    <td><input style='<?= $locked[3]; ?>' <?= $readonly[3]; ?> type="text" name="new4" value='<?= $new[3]; ?>' maxlength="1"></td>
-                    <td><input style='<?= $locked[4]; ?>' <?= $readonly[4]; ?> type="text" name="new5" value='<?= $new[4]; ?>' maxlength="1"></td> 
-                    <td><input style='<?= $locked[5]; ?>' <?= $readonly[5]; ?> type="text" name="new6" value='<?= $new[5]; ?>' maxlength="1"></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[3] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[4] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[5] ?></button></td>
                 </tr>
                 <tr>
-                    <td><input style='<?= $locked[6]; ?>' <?= $readonly[6]; ?> type="text" name="new7" value='<?= $new[6]; ?>' maxlength="1"></td>
-                    <td><input style='<?= $locked[7]; ?>' <?= $readonly[7]; ?> type="text" name="new8" value='<?= $new[7]; ?>' maxlength="1"></td>
-                    <td><input style='<?= $locked[8]; ?>' <?= $readonly[8]; ?> type="text" name="new9" value='<?= $new[8]; ?>' maxlength="1"></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[6] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[7] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[8] ?></button></td>
                 </tr>
             </table>
 
         </div>
-        <div class="col-md-3 mb-5 text-sm-center text-md-right">
-            <div>
-                <input type="submit" name="go" value="GO" class="go">
-            </div>
-            <div>
-                <input type="submit" name="clear" value="Start Over" class="clear">
-            </div>
 
+        <div class="col-md-12 col-lg-3 order-3 order-lg-3 mb-5 text-md-center text-lg-right control-row">
+            <div class="row">
+
+                <div class="col-sm-5 col-lg-12 text-sm-center">
+                    <button type="submit" name="clear" class="btn btn-danger">Start Over</button>
+                </div>
+                
+                <div class="col-sm-7 col-lg-12 text-sm-center">
+                    <a href="2P.php" class="btn btn-warning">2 Player Game</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
