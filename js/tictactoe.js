@@ -1,7 +1,7 @@
 $(() => {
     const applySelectedDifficulty = (difficulty) => {
         $('#difficulty-selected-button').html(difficulty);
-        $('.difficulty-dropdown').removeClass('btn-primary btn-warning btn-danger');
+        $('.difficulty-dropdown').removeClass('btn-light btn-primary btn-warning btn-danger').prop('disabled', false);
         switch (difficulty) {
             case 'Novice':
                 $('.difficulty-dropdown').addClass('btn-primary');
@@ -39,7 +39,7 @@ $(() => {
 
     const applySelectedSymbol = (symbol) => {
         $('#symbol-selected-button').html(symbol);
-        $('.symbol-dropdown').removeClass('btn-primary btn-warning');
+        $('.symbol-dropdown').removeClass('btn-light btn-primary btn-warning').prop('disabled', false);
         $('.symbol-dropdown').addClass(symbol == 'X' ? 'btn-primary' : 'btn-warning');
 
         currentGameState['player-symbol'] = symbol;
@@ -57,7 +57,7 @@ $(() => {
 
     const applyPlayerStart = (playerStart) => {
         $('#player-start-selected-button').html(playerStart ? 'Player' : 'Computer');
-        $('.player-start-dropdown').removeClass('btn-primary btn-warning');
+        $('.player-start-dropdown').removeClass('btn-light btn-primary btn-warning').prop('disabled', false);
         $('.player-start-dropdown').addClass(playerStart ? 'btn-primary' : 'btn-warning');
 
         currentGameState['player-start'] = playerStart;
@@ -81,7 +81,9 @@ $(() => {
     };
     
     const resetGameBoard = () => {
-        currentGameState["game-board"]["grid-values"] = [];
+        if (currentGameState["game-board"] != null) {
+            currentGameState["game-board"]["grid-values"] = [];
+        }
     };
 
     const setGameInProgress = (inProgress) => {
@@ -103,7 +105,7 @@ $(() => {
             return;
         }
     
-        button.html(playerSymbol);
+        button.html(currentGameState['player-symbol']);
         updateBoardGridState()
         saveGameState();
     };
@@ -124,7 +126,9 @@ $(() => {
         window.location.reload();
     });
 
-    applySelectedDifficulty(gameDifficulty);
-    applySelectedSymbol(playerSymbol);
-    applyPlayerStart(playerStart);
+    applySelectedDifficulty(currentGameState['game-difficulty']);
+    applySelectedSymbol(currentGameState['player-symbol']);
+    applyPlayerStart(currentGameState['player-start'] == 'true');
+    // currentGameState = [];
+    // saveGameState();
 });

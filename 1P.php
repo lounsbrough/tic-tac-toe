@@ -1,15 +1,17 @@
 <?PHP
 
 session_start();
-$currentGameState = $_SESSION['tictactoe-game-state'] ?? null;
+$gameState = $_SESSION['tictactoe-game-state'] ?? null;
 
-$currentGameState['game-board']['grid-values'] = $currentGameState['game-board']['grid-values'] ?? array_fill(0, 9, '');
-$currentGameState['game-in-progress'] = $currentGameState['game-in-progress'] ?? false;
-$currentGameState['player-start'] = $currentGameState['player-start'] ?? false;
+$gameState['game-board']['grid-values'] = $gameState['game-board']['grid-values'] ?? array_fill(0, 9, '');
+$gameState['game-in-progress'] = $gameState['game-in-progress'] ?? false;
+$gameState['game-difficulty'] = $gameState['game-difficulty'] ?? 'Normal';
+$gameState['player-symbol'] = $gameState['player-symbol'] ?? 'X';
+$gameState['player-start'] = $gameState['player-start'] ?? 'true';
 
-$gridValues = $currentGameState['game-board']['grid-values'];
+$gridValues = $gameState['game-board']['grid-values'];
 $gridDisabled = array_map(function($value) { return empty($value) ? '' : 'disabled'; }, $gridValues);
-$gameInProgress = $currentGameState['game-in-progress'] == 'true';
+$gameInProgress = $gameState['game-in-progress'] == 'true';
 
 ?>
 
@@ -18,10 +20,7 @@ $gameInProgress = $currentGameState['game-in-progress'] == 'true';
 <body>
 
 <script>
-    let gameDifficulty = '<?= $currentGameState['game-difficulty'] ?: 'Normal' ?>';
-    let playerSymbol = '<?= $currentGameState['player-symbol'] ?: 'X' ?>';
-    let playerStart = <?= $currentGameState['player-start'] ?: 'true' ?>;
-    let currentGameState = <?= json_encode($currentGameState) ?>;
+    let currentGameState = <?= json_encode($gameState) ?>;
 </script>
 
 <script src="assets/bootstrap/jquery-3.3.1.min.js"></script>
@@ -52,8 +51,8 @@ if (!$gameInProgress)
                 <div class="col-sm-12 col-lg-12 text-sm-center">
                     <label class="game-settings-label">Difficulty:</label>
                     <div class="btn-group">
-                        <button id="difficulty-selected-button" type="button" class="btn btn-primary difficulty-dropdown">Novice</button>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split difficulty-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button id="difficulty-selected-button" type="button" class="btn btn-light difficulty-dropdown" disabled></button>
+                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split difficulty-dropdown" disabled data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu">
@@ -67,8 +66,8 @@ if (!$gameInProgress)
                 <div class="col-sm-12">
                     <label class="game-settings-label">Play As:</label>
                     <div class="btn-group">
-                        <button id="symbol-selected-button" type="button" class="btn btn-primary symbol-dropdown">X</button>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split symbol-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button id="symbol-selected-button" type="button" class="btn btn-light symbol-dropdown"></button>
+                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split symbol-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu">
@@ -81,8 +80,8 @@ if (!$gameInProgress)
                 <div class="col-sm-12">                    
                     <label class="game-settings-label">Who Starts?:</label>
                     <div class="btn-group">
-                        <button id="player-start-selected-button" type="button" class="btn btn-primary player-start-dropdown">Player</button>
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split player-start-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button id="player-start-selected-button" type="button" class="btn btn-light player-start-dropdown"></button>
+                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split player-start-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu">
