@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<script src="assets/bootstrap/jquery-3.3.1.slim.min.js"></script>
+<script src="assets/bootstrap/jquery-3.3.1.min.js"></script>
 <script src="assets/bootstrap/popper.min.js"></script>
 
 <link rel="stylesheet" href="assets/bootstrap/bootstrap.min.css">
@@ -12,12 +12,17 @@
 <link rel="stylesheet" href="css/tictactoe.css">
 <script src="js/tictactoe.js"></script>
 
-<!-- PHP Code -->
-
 <?PHP
+
+session_start();
+$currentGameState = $_SESSION['game-state'] ?? null;
 
 $new = array_fill(0, 9, 'X');
 $gridValues = array_fill(0, 9, 'X');
+if (!empty($currentGameState))
+{
+    $gridValues = $currentGameState['game-board']['grid-values'];
+}
 
 require_once dirname(__FILE__).'/classes/game-logic.php';
 $gameLogic = new GameLogic();
@@ -198,8 +203,6 @@ for ($i = 0; $i <= 8; $i++)
     <span class="navbar-brand mb-0 h1 mx-auto text-center">TicTacToe</span>
 </nav>
 
-<form action="1P.php" method="get" autocomplete="off">
-
 <div class="container-fluid">
     <div class="row">
 
@@ -261,19 +264,19 @@ for ($i = 0; $i <= 8; $i++)
 
             <table id="game-board" class="mx-auto text-center">
                 <tr>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[0] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[1] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[2] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[0]) ? '' : ' disabled'?>><?= $gridValues[0] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[1]) ? '' : ' disabled'?>><?= $gridValues[1] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[2]) ? '' : ' disabled'?>><?= $gridValues[2] ?></button></td>
                 </tr>
                 <tr>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[3] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[4] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[5] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[3]) ? '' : ' disabled'?>><?= $gridValues[3] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[4]) ? '' : ' disabled'?>><?= $gridValues[4] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[5]) ? '' : ' disabled'?>><?= $gridValues[5] ?></button></td>
                 </tr>
                 <tr>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[6] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[7] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"><?= $gridValues[8] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[6]) ? '' : ' disabled'?>><?= $gridValues[6] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[7]) ? '' : ' disabled'?>><?= $gridValues[7] ?></button></td>
+                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d"<?= empty($gridValues[8]) ? '' : ' disabled'?>><?= $gridValues[8] ?></button></td>
                 </tr>
             </table>
 
@@ -283,9 +286,9 @@ for ($i = 0; $i <= 8; $i++)
             <div class="row">
 
                 <div class="col-sm-5 col-lg-12 text-sm-center">
-                    <button type="submit" name="clear" class="btn btn-danger">Start Over</button>
+                    <button id="start-over-button" class="btn btn-danger">Start Over</button>
                 </div>
-                
+
                 <div class="col-sm-7 col-lg-12 text-sm-center">
                     <a href="2P.php" class="btn btn-warning">2 Player Game</a>
                 </div>
@@ -293,20 +296,6 @@ for ($i = 0; $i <= 8; $i++)
         </div>
     </div>
 </div>
-
-<input type="hidden" name="old1" value='<?= $old[0]; ?>'>
-<input type="hidden" name="old2" value='<?= $old[1]; ?>'>
-<input type="hidden" name="old3" value='<?= $old[2]; ?>'>
-<input type="hidden" name="old4" value='<?= $old[3]; ?>'>
-<input type="hidden" name="old5" value='<?= $old[4]; ?>'>
-<input type="hidden" name="old6" value='<?= $old[5]; ?>'>
-<input type="hidden" name="old7" value='<?= $old[6]; ?>'>
-<input type="hidden" name="old8" value='<?= $old[7]; ?>'>
-<input type="hidden" name="old9" value='<?= $old[8]; ?>'>
-<input type="hidden" name="turn" value='<?= $turn; ?>'>
-<input type="hidden" name="win" value='<?= $win; ?>'>
-
-</form>
 
 </body>
 </html>

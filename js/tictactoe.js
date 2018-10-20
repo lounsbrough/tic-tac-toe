@@ -14,6 +14,33 @@ const applySelectedDifficulty = (difficulty) => {
     }
 };
 
+const getGameStateObject = () => {
+    let gameState = {
+        "game-board": {
+            "grid-values" : []
+        }
+    };
+
+    $('#game-board').find('button').each((index, value) => {
+        gameState["game-board"]["grid-values"].push($(value).html());
+    });
+
+    return gameState;
+};
+
+const clearGameBoard = () => {
+    $('#game-board').find('button').html('').prop('disabled', false);
+};
+
+const saveGameState = () => {
+    $.ajax({
+        url: 'ajax/save-game-state.php',
+        method: 'POST',
+        data: getGameStateObject(),
+        cache: false
+    });
+};
+
 $(() => {
     $('.difficulty-option').click((e, h) => {
         applySelectedDifficulty($(e.target).attr('data-difficulty'));
@@ -33,4 +60,14 @@ $(() => {
                 break;
         }
     });
+
+    $('#game-board').find('button').click((e, h) => {
+        $(e.target).html(Math.random(0, 1) > 0.5 ? 'X' : '');
+        saveGameState();
+    });
+
+    $('#start-over-button').click(() => {
+        clearGameBoard();
+        saveGameState();
+    })
 });
