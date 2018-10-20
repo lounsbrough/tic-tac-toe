@@ -19,11 +19,9 @@ class GameLogic
         $this->playRandom($grid, $symbol);   
     }
 
-    public function geniusMove(&$grid, $turn, $start, $playerSymbol)
+    public function geniusMove(&$grid, $playerSymbol)
     {
         $symbol = $this->oppositeSymbol($playerSymbol);
-        
-        $old = $grid;
         
         if ($this->tryToWin($grid, $symbol)) return;
 

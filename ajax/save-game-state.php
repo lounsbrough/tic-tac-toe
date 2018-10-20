@@ -1,4 +1,6 @@
 <?php
+
 session_start();
-$_SESSION["game-state"] = $_POST;
+$_SESSION["tictactoe-game-state"] = $_POST;
+
 ?>

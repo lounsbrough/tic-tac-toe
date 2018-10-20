@@ -20,6 +20,7 @@ body {
 }
 .navbar-brand {
 	font-size: 75px;
+	font-style: italic;
 }
 #game-board .btn {
 	width: 150px;
@@ -37,16 +38,17 @@ body {
 	margin-top: 20px;
 	margin-bottom: 20px;
 }
+.game-settings-label {
+	color: white;
+	font-size: 40px;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+.control-row {
+	background: rgba(0, 0, 0, 0.5) !important;
+}
 @media (max-width: 991px) {
 	.navbar, .navbar-brand {
 		padding: 0px;
-		font-size: 60px;
-	}
-	.navbar, .navbar-brand {
-		padding: 0px;
-		font-size: 40px;
-	}
-	.control-row {
-		background: rgba(255, 255, 255, 0.5) !important;
 	}
 }
