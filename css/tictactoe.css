@@ -22,6 +22,12 @@ body {
 	font-size: 75px;
 	font-style: italic;
 }
+.game-message-alert {
+	border-radius: 0px;
+}
+.hide-message {
+	visibility: hidden;
+}
 #game-board .btn {
 	-webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;

@@ -7,13 +7,20 @@ $gameState['game-in-progress'] = $gameState['game-in-progress'] ?? false;
 $gameState['game-difficulty'] = $gameState['game-difficulty'] ?? 'Normal';
 $gameState['player-symbol'] = $gameState['player-symbol'] ?? 'X';
 $gameState['player-start'] = $gameState['player-start'] ?? true;
+$gameState['win-result'] = $gameState['win-result'] ?? 0;
 $gameState['winning-row'] = $gameState['winning-row'] ?? array();
-
 $gridValues = $gameState['game-board']['grid-values'];
 
-$gridDisabled = array_map(function($value) { return empty($value) ? '' : 'disabled'; }, $gridValues);
+$winResult = $gameState['win-result'];
+$winningRow = $gameState['winning-row'];
 
-$gridClasses = array_map(function($value) { 
+$gridDisabled = array_fill(0, 9, 'disabled');
+if ($winResult == 0)
+{
+    $gridDisabled = array_map(function($value) { return empty($value) ? '' : 'disabled'; }, $gridValues);
+}
+
+$gridClasses = array_map(function($value) {
     switch ($value) {
         case '':
             return 'btn-default';
@@ -24,10 +31,22 @@ $gridClasses = array_map(function($value) {
     }
 }, $gridValues);
 
-$winningRow = $gameState['winning-row'];
 foreach ($winningRow as $winningCell)
 {
     $gridClasses[$winningCell] .= ' winning-cell';
+}
+
+$gameMessage = '';
+switch ($winResult) {
+    case 1:
+        $gameMessage = 'You Win!';
+        break;
+    case 2:
+        $gameMessage = 'Computer Wins!';
+        break;
+    case 3:
+        $gameMessage = 'Cat\'s Game';
+        break;
 }
 
 $gameInProgress = $gameState['game-in-progress'] == 'true';
@@ -53,7 +72,7 @@ session_write_close();
 <link rel="stylesheet" href="css/tictactoe.css">
 <script src="js/tictactoe.js"></script>
 
-<nav class="navbar navbar-dark bg-dark mb-5">
+<nav class="navbar navbar-dark bg-dark">
     <span class="navbar-brand mb-0 h1 mx-auto text-center">TicTacToe</span>
 </nav>
 
@@ -63,8 +82,9 @@ if (!$gameInProgress)
 ?>
 
 <div class="container-fluid">
+
     <div class="row">
-        <div class="col-md-12 mb-5 text-center control-row">
+        <div class="col-md-12 mt-5 text-center control-row">
             <div class="row">
 
                 <div class="col-md-12">
@@ -127,6 +147,12 @@ else
 
 <div class="container-fluid">
     <div class="row">
+
+        <div class="mx-auto w-100 h-50 text-center">
+        <div class="alert alert-primary game-message-alert <?= empty($gameMessage) ? 'hide-message' : '' ?>" role="alert">
+            <?= empty($gameMessage) ? '&nbsp;' : $gameMessage ?>
+        </div>
+        </div>
 
         <div class="col-md-12 mb-5 text-center">
 

@@ -82,8 +82,9 @@ $(() => {
     
     const resetGameBoard = () => {
         if (currentGameState['game-board'] != null) {
-            currentGameState['game-board']['grid-values'] = [];
+            currentGameState['game-board']['grid-values'] = new Array(9).fill('');
         }
+        currentGameState['win-result'] = 0;
         currentGameState['winning-row'] = [];
     };
 
@@ -112,11 +113,12 @@ $(() => {
             gameOver = JSON.parse(response);
             const winResult = gameOver[0];
             const winningRow = gameOver[1];
-            if (winResult != 0) {
+            if (winResult > 0) {
                 $('#game-board').find('button').prop('disabled', true);
                 $('#game-board').find('button').filter((index, value) => {
                     return $.inArray(index, winningRow) > -1;
                 }).addClass('winning-cell');
+                currentGameState['win-result'] = winResult;
                 currentGameState['winning-row'] = winningRow;
                 saveGameState();
             }
