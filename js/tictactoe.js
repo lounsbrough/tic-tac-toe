@@ -73,24 +73,67 @@ $(() => {
         applyPlayerStart(selectedPlayerStart);
     });
     
-    const updateBoardGridState = () => {
+    const updateStateBoardFromScreen = async () => {
         currentGameState['game-board']['grid-values'] = [];
-        $('#game-board').find('button').each((index, value) => {
-            currentGameState['game-board']['grid-values'].push($(value).html());
+        $('#game-board').find('button').each((index, button) => {
+            currentGameState['game-board']['grid-values'].push($(button).html());
+        });
+        await saveGameState();
+    };
+
+    const updateScreenBoardFromState = () => {
+        $('#game-board').find('button').each((index, button) => {
+            setGridCellValue($(button), currentGameState['game-board']['grid-values'][index]);
         });
     };
+
+    const setGridCellValue = (button, symbol) => {
+        if ($.inArray(symbol, ['X', 'O']) !== -1) {
+            $(button).html(symbol).removeClass('btn-default').addClass(symbol == 'X' ? 'btn-primary' : 'btn-warning');
+        }
+    };
+
+    const disableAllCells = (button, symbol) => {
+        $('#game-board').find('button').prop('disabled', true);
+    };
     
-    const resetGameBoard = () => {
+    const resetGameBoard = async () => {
         if (currentGameState['game-board'] != null) {
             currentGameState['game-board']['grid-values'] = new Array(9).fill('');
         }
         currentGameState['win-result'] = 0;
         currentGameState['winning-row'] = [];
+
+        await saveGameState();
     };
 
-    const setGameInProgress = (inProgress) => {
+    const setGameInProgress = async (inProgress) => {
         currentGameState['game-in-progress'] = inProgress;
-        saveGameState();
+        await saveGameState();
+    };
+
+    const setGameMessage = async (message) => {
+        $('#game-message-alert').html(message);
+        if (message != '') {
+            $('#game-message-alert').removeClass('hide-message');
+        }
+        currentGameState['game-message'] = message;
+        await saveGameState();
+    };
+
+    const getGameOverMessage = async (winResult) => {
+        switch (winResult) {
+            case 1:
+                setGameMessage('You Win! 👤');
+                break;
+            case 2:
+                setGameMessage('Computer Wins! 🤖');
+                break;
+            case 3:
+                setGameMessage('Cat\'s Game 😸');
+                break;
+        }
+        await saveGameState();
     };
     
     const saveGameState = async () => {
@@ -109,18 +152,25 @@ $(() => {
             url: 'ajax/check-game-over.php',
             method: 'POST',
             cache: false
-        }).done((response) => {
+        }).done(async (response) => {
             gameOver = JSON.parse(response);
             const winResult = gameOver[0];
             const winningRow = gameOver[1];
             if (winResult > 0) {
-                $('#game-board').find('button').prop('disabled', true);
-                $('#game-board').find('button').filter((index, value) => {
+                $('#game-board').find('button').filter((index, button) => {
                     return $.inArray(index, winningRow) > -1;
                 }).addClass('winning-cell');
                 currentGameState['win-result'] = winResult;
                 currentGameState['winning-row'] = winningRow;
-                saveGameState();
+;
+                await getGameOverMessage(winResult);
+            }
+            else
+            {
+                disableAllCells();
+                $('#game-board').find('button').filter((index, button) => {
+                    return $(button).html() == '';
+                }).prop('disabled', false);
             }
         });
 
@@ -132,16 +182,14 @@ $(() => {
             return;
         }
     
-        button.html(currentGameState['player-symbol']).removeClass('btn-default').addClass(currentGameState['player-symbol'] == 'X' ? 'btn-primary' : 'btn-warning');
-        updateBoardGridState();
-        await saveGameState();
+        setGridCellValue(button, currentGameState['player-symbol']);
+        await updateStateBoardFromScreen();
 
         const gameOver = await checkGameOver();
 
         if (gameOver[0] == 0)
         {
             await processAIMove();
-            window.location.reload();
         }
     };
 
@@ -150,21 +198,23 @@ $(() => {
             url: 'ajax/process-ai-move.php',
             method: 'POST',
             cache: false
-        }).done((response) => {
+        }).done(async (response) => {
             currentGameState['game-board']['grid-values'] = JSON.parse(response);
+            saveGameState();
+            await updateScreenBoardFromState();
+            await checkGameOver();
         });
-
-        await checkGameOver();
     };
 
-    $('#game-board').find('button').click((e, h) => {
-        processPlayerMove($(e.target));
+    $('#game-board').find('button').click(async (e, h) => {
+        disableAllCells();
+        await processPlayerMove($(e.target));
     });
 
-    $('#start-over-button').click(() => {
-        resetGameBoard();
-        setGameInProgress(false);
-        saveGameState();
+    $('#start-over-button').click(async () => {
+        await resetGameBoard();
+        await setGameInProgress(false);
+        await setGameMessage('');
         window.location.reload();
     });
 

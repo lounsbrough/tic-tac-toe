@@ -9,10 +9,12 @@ $gameState['player-symbol'] = $gameState['player-symbol'] ?? 'X';
 $gameState['player-start'] = $gameState['player-start'] ?? true;
 $gameState['win-result'] = $gameState['win-result'] ?? 0;
 $gameState['winning-row'] = $gameState['winning-row'] ?? array();
+$gameState['game-message'] = $gameState['game-message'] ?? '';
 $gridValues = $gameState['game-board']['grid-values'];
 
 $winResult = $gameState['win-result'];
 $winningRow = $gameState['winning-row'];
+$gameMessage = $gameState['game-message'];
 
 $gridDisabled = array_fill(0, 9, 'disabled');
 if ($winResult == 0)
@@ -34,19 +36,6 @@ $gridClasses = array_map(function($value) {
 foreach ($winningRow as $winningCell)
 {
     $gridClasses[$winningCell] .= ' winning-cell';
-}
-
-$gameMessage = '';
-switch ($winResult) {
-    case 1:
-        $gameMessage = 'You Win!';
-        break;
-    case 2:
-        $gameMessage = 'Computer Wins!';
-        break;
-    case 3:
-        $gameMessage = 'Cat\'s Game';
-        break;
 }
 
 $gameInProgress = $gameState['game-in-progress'] == 'true';
@@ -148,8 +137,8 @@ else
 <div class="container-fluid">
     <div class="row">
 
-        <div class="mx-auto w-100 h-50 text-center">
-        <div class="alert alert-primary game-message-alert <?= empty($gameMessage) ? 'hide-message' : '' ?>" role="alert">
+        <div class="mx-auto w-100 text-center">
+        <div id="game-message-alert" class="alert alert-warning game-message-alert <?= empty($gameMessage) ? 'hide-message' : '' ?>" role="alert">
             <?= empty($gameMessage) ? '&nbsp;' : $gameMessage ?>
         </div>
         </div>
@@ -176,7 +165,7 @@ else
             
         </div>
 
-        <div class="col-md-12 mb-5 text-center">
+        <div class="col-md-12 text-center">
             <button id="start-over-button" class="btn btn-danger">Start Over</button>
         </div>
 
