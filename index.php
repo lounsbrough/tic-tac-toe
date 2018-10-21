@@ -22,20 +22,26 @@ if ($winResult == 0)
     $gridDisabled = array_map(function($value) { return empty($value) ? '' : 'disabled'; }, $gridValues);
 }
 
-$gridClasses = array_map(function($value) {
-    switch ($value) {
-        case '':
-            return 'btn-default';
-        case 'X':
-            return 'btn-primary';
-        case 'O':
-            return 'btn-warning';
-    }
-}, $gridValues);
-
-foreach ($winningRow as $winningCell)
+if ($winResult == 0)
 {
-    $gridClasses[$winningCell] .= ' winning-cell';
+    $gridClasses = array_map(function($value) {
+        switch ($value) {
+            case 'X':
+                return 'btn-primary';
+            case 'O':
+                return 'btn-warning';
+            default:
+                return 'btn-default';
+        }
+    }, $gridValues);
+}
+else
+{
+    $gridClasses = array_fill(0, 9, '');
+    foreach ($gridValues as $index => $gridValue)
+    {
+        $gridClasses[$index] = array_search($index, $winningRow) === false ? 'btn-default' : ($gridValue == 'X' ? 'btn-primary' : 'btn-warning');
+    }
 }
 
 $gameInProgress = $gameState['game-in-progress'] == 'true';

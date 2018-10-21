@@ -158,11 +158,11 @@ $(() => {
             const winningRow = gameOver[1];
             if (winResult > 0) {
                 $('#game-board').find('button').filter((index, button) => {
-                    return $.inArray(index, winningRow) > -1;
-                }).addClass('winning-cell');
+                    return $.inArray(index, winningRow) == -1;
+                }).removeClass('btn-primary btn-warning').addClass('btn-default');
                 currentGameState['win-result'] = winResult;
                 currentGameState['winning-row'] = winningRow;
-;
+
                 await getGameOverMessage(winResult);
             }
             else
