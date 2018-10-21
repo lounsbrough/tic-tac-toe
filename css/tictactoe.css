@@ -34,6 +34,10 @@ body {
 #game-board .btn.disabled, #game-board .btn:disabled {
 	opacity: 1;
 }
+#game-board .winning-cell {
+	font-size: 120px !important;
+	line-height: 120px !important;
+}
 .control-row .btn {
 	margin-top: 20px;
 	margin-bottom: 20px;

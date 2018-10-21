@@ -74,40 +74,88 @@ $(() => {
     });
     
     const updateBoardGridState = () => {
-        currentGameState["game-board"]["grid-values"] = [];
+        currentGameState['game-board']['grid-values'] = [];
         $('#game-board').find('button').each((index, value) => {
-            currentGameState["game-board"]["grid-values"].push($(value).html());
+            currentGameState['game-board']['grid-values'].push($(value).html());
         });
     };
     
     const resetGameBoard = () => {
-        if (currentGameState["game-board"] != null) {
-            currentGameState["game-board"]["grid-values"] = [];
+        if (currentGameState['game-board'] != null) {
+            currentGameState['game-board']['grid-values'] = [];
         }
+        currentGameState['winning-row'] = [];
     };
 
     const setGameInProgress = (inProgress) => {
         currentGameState['game-in-progress'] = inProgress;
         saveGameState();
-    }
+    };
     
-    const saveGameState = () => {
-        $.ajax({
+    const saveGameState = async () => {
+        await $.ajax({
             url: 'ajax/save-game-state.php',
             method: 'POST',
             data: currentGameState,
             cache: false
         });
     };
+
+    const checkGameOver = async () => {
+        let gameOver;
+
+        await $.ajax({
+            url: 'ajax/check-game-over.php',
+            method: 'POST',
+            cache: false
+        }).done((response) => {
+            gameOver = JSON.parse(response);
+            const winResult = gameOver[0];
+            const winningRow = gameOver[1];
+            if (winResult != 0) {
+                $('#game-board').find('button').prop('disabled', true);
+                $('#game-board').find('button').filter((index, value) => {
+                    return $.inArray(index, winningRow) > -1;
+                }).animate({
+                    'font-size': '120px',
+                    'line-height': '120px'
+                }, 1000);
+                currentGameState['winning-row'] = winningRow;
+                saveGameState();
+            }
+        });
+
+        return gameOver;
+    };
     
-    const processPlayerMove = (button) => {
+    const processPlayerMove = async (button) => {
         if (button.html == '') {
             return;
         }
     
-        button.html(currentGameState['player-symbol']);
-        updateBoardGridState()
-        saveGameState();
+        button.html(currentGameState['player-symbol']).removeClass('btn-default').addClass(currentGameState['player-symbol'] == 'X' ? 'btn-primary' : 'btn-warning');
+        updateBoardGridState();
+        await saveGameState();
+
+        const gameOver = await checkGameOver();
+
+        if (gameOver[0] == 0)
+        {
+            await processAIMove();
+            window.location.reload();
+        }
+    };
+
+    const processAIMove = async () => {
+        await $.ajax({
+            url: 'ajax/process-ai-move.php',
+            method: 'POST',
+            cache: false
+        }).done((response) => {
+            currentGameState['game-board']['grid-values'] = JSON.parse(response);
+        });
+
+        await checkGameOver();
     };
 
     $('#game-board').find('button').click((e, h) => {
@@ -121,14 +169,17 @@ $(() => {
         window.location.reload();
     });
 
-    $('#start-game-button').click(() => {
+    $('#start-game-button').click(async () => {
         setGameInProgress(true);
+
+        if (!currentGameState['player-start'] && currentGameState['game-board']['grid-values'].filter((e) => e != '').length == 0) {
+            await processAIMove();
+        }
+
         window.location.reload();
     });
 
     applySelectedDifficulty(currentGameState['game-difficulty']);
     applySelectedSymbol(currentGameState['player-symbol']);
     applyPlayerStart(currentGameState['player-start'] == 'true');
-    // currentGameState = [];
-    // saveGameState();
 });

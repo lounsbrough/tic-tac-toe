@@ -89,9 +89,9 @@ if (isset($errmsg))
 else
 {
     $errmsg = '';  	  
-    $checkWin = $gameLogic->checkWin($new,$turn);
-    $win = $checkWin[0];
-    $winningRow = $checkWin[1];
+    $checkGameOver = $gameLogic->checkGameOver($new,$turn);
+    $win = $checkGameOver[0];
+    $winningRow = $checkGameOver[1];
     if ($win == 1)
     {
         $errmsg = $turn." Wins!";

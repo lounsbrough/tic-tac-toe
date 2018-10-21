@@ -243,7 +243,7 @@ class GameLogic
         return $winningMoves;
     }
 
-    public function checkWin($grid, $symbol)
+    public function checkGameOver($grid, $symbol)
     {
         $gridRows = $this->gridRows();
 

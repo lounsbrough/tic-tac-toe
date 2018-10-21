@@ -1,5 +1,4 @@
 <?PHP
-
 session_start();
 $gameState = $_SESSION['tictactoe-game-state'] ?? null;
 
@@ -7,12 +6,29 @@ $gameState['game-board']['grid-values'] = $gameState['game-board']['grid-values'
 $gameState['game-in-progress'] = $gameState['game-in-progress'] ?? false;
 $gameState['game-difficulty'] = $gameState['game-difficulty'] ?? 'Normal';
 $gameState['player-symbol'] = $gameState['player-symbol'] ?? 'X';
-$gameState['player-start'] = $gameState['player-start'] ?? 'true';
+$gameState['player-start'] = $gameState['player-start'] ?? true;
+$gameState['winning-row'] = $gameState['winning-row'] ?? array();
 
 $gridValues = $gameState['game-board']['grid-values'];
 $gridDisabled = array_map(function($value) { return empty($value) ? '' : 'disabled'; }, $gridValues);
+$gridClasses = array_map(function($value) { 
+    switch ($value) {
+        case '':
+            return 'btn-default';
+        case 'X':
+            return 'btn-primary';
+        case 'O':
+            return 'btn-warning';
+    }
+}, $gridValues);
+$winningRow = $gameState['winning-row'];
+foreach ($winningRow as $winningCell)
+{
+    $gridClasses[$winningCell] .= ' winning-cell';
+}
 $gameInProgress = $gameState['game-in-progress'] == 'true';
 
+session_write_close();
 ?>
 
 <!DOCTYPE html>
@@ -38,18 +54,17 @@ $gameInProgress = $gameState['game-in-progress'] == 'true';
 </nav>
 
 <?php
-
 if (!$gameInProgress)
 {
 ?>
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12 mb-5 text-sm-center control-row">
+        <div class="col-md-12 mb-5 text-center control-row">
             <div class="row">
 
-                <div class="col-sm-12 col-lg-12 text-sm-center">
-                    <label class="game-settings-label">Difficulty:</label>
+                <div class="col-md-12">
+                    <label class="game-settings-label">Difficulty</label>
                     <div class="btn-group">
                         <button id="difficulty-selected-button" type="button" class="btn btn-light difficulty-dropdown" disabled></button>
                         <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split difficulty-dropdown" disabled data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -63,8 +78,8 @@ if (!$gameInProgress)
                     </div>
                 </div>
 
-                <div class="col-sm-12">
-                    <label class="game-settings-label">Play As:</label>
+                <div class="col-md-12">
+                    <label class="game-settings-label">Play As</label>
                     <div class="btn-group">
                         <button id="symbol-selected-button" type="button" class="btn btn-light symbol-dropdown"></button>
                         <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split symbol-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -77,8 +92,8 @@ if (!$gameInProgress)
                     </div>
                 </div>
 
-                <div class="col-sm-12">                    
-                    <label class="game-settings-label">Who Starts?:</label>
+                <div class="col-md-12">                    
+                    <label class="game-settings-label">Who Starts?</label>
                     <div class="btn-group">
                         <button id="player-start-selected-button" type="button" class="btn btn-light player-start-dropdown"></button>
                         <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split player-start-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -91,7 +106,7 @@ if (!$gameInProgress)
                     </div>
                 </div>
 
-                <div class="col-sm-12">
+                <div class="col-md-12">
                     <button id="start-game-button" class="btn btn-primary">Start Game!</button>
                 </div>
 
@@ -109,35 +124,30 @@ else
 <div class="container-fluid">
     <div class="row">
 
-        <div class="col-md-12 mb-5 text-sm-center">
+        <div class="col-md-12 mb-5 text-center">
 
-            <table id="game-board" class="mx-auto text-center">
+            <table id="game-board" class="mx-auto">
                 <tr>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[0] ?>><?= $gridValues[0] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[1] ?>><?= $gridValues[1] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[2] ?>><?= $gridValues[2] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[0] ?> btn-sq-lg btn3d "<?= $gridDisabled[0] ?>><?= $gridValues[0] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[1] ?> btn-sq-lg btn3d "<?= $gridDisabled[1] ?>><?= $gridValues[1] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[2] ?> btn-sq-lg btn3d "<?= $gridDisabled[2] ?>><?= $gridValues[2] ?></button></td>
                 </tr>
                 <tr>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[3] ?>><?= $gridValues[3] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[4] ?>><?= $gridValues[4] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[5] ?>><?= $gridValues[5] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[3] ?> btn-sq-lg btn3d "<?= $gridDisabled[3] ?>><?= $gridValues[3] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[4] ?> btn-sq-lg btn3d "<?= $gridDisabled[4] ?>><?= $gridValues[4] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[5] ?> btn-sq-lg btn3d "<?= $gridDisabled[5] ?>><?= $gridValues[5] ?></button></td>
                 </tr>
                 <tr>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[6] ?>><?= $gridValues[6] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[7] ?>><?= $gridValues[7] ?></button></td>
-                    <td><button type="button" class="btn btn-danger btn-sq-lg btn3d "<?= $gridDisabled[8] ?>><?= $gridValues[8] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[6] ?> btn-sq-lg btn3d "<?= $gridDisabled[6] ?>><?= $gridValues[6] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[7] ?> btn-sq-lg btn3d "<?= $gridDisabled[7] ?>><?= $gridValues[7] ?></button></td>
+                    <td><button type="button" class="btn <?= $gridClasses[8] ?> btn-sq-lg btn3d "<?= $gridDisabled[8] ?>><?= $gridValues[8] ?></button></td>
                 </tr>
             </table>
             
         </div>
 
-        <div class="col-md-12 mb-5 text-sm-center">
-            <div class="row">
-
-                <div class="col-sm-5 col-lg-12 text-sm-center">
-                    <button id="start-over-button" class="btn btn-danger">Start Over</button>
-                </div>
-            </div>
+        <div class="col-md-12 mb-5 text-center">
+            <button id="start-over-button" class="btn btn-danger">Start Over</button>
         </div>
 
     </div>
