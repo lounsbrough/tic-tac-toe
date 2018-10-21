@@ -116,10 +116,7 @@ $(() => {
                 $('#game-board').find('button').prop('disabled', true);
                 $('#game-board').find('button').filter((index, value) => {
                     return $.inArray(index, winningRow) > -1;
-                }).animate({
-                    'font-size': '120px',
-                    'line-height': '120px'
-                }, 1000);
+                }).addClass('winning-cell');
                 currentGameState['winning-row'] = winningRow;
                 saveGameState();
             }

@@ -10,7 +10,9 @@ $gameState['player-start'] = $gameState['player-start'] ?? true;
 $gameState['winning-row'] = $gameState['winning-row'] ?? array();
 
 $gridValues = $gameState['game-board']['grid-values'];
+
 $gridDisabled = array_map(function($value) { return empty($value) ? '' : 'disabled'; }, $gridValues);
+
 $gridClasses = array_map(function($value) { 
     switch ($value) {
         case '':
@@ -21,11 +23,13 @@ $gridClasses = array_map(function($value) {
             return 'btn-warning';
     }
 }, $gridValues);
+
 $winningRow = $gameState['winning-row'];
 foreach ($winningRow as $winningCell)
 {
     $gridClasses[$winningCell] .= ' winning-cell';
 }
+
 $gameInProgress = $gameState['game-in-progress'] == 'true';
 
 session_write_close();
