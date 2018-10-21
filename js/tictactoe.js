@@ -194,6 +194,7 @@ $(() => {
 
         if (gameOver[0] == 0)
         {
+            disableAllCells();
             await processAIMove();
         }
     };
