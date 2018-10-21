@@ -117,6 +117,10 @@ $(() => {
         if (message != '') {
             $('#game-message-alert').removeClass('hide-message');
         }
+        else
+        {
+            $('#game-message-alert').addClass('hide-message');
+        }
         currentGameState['game-message'] = message;
         await saveGameState();
     };
@@ -164,6 +168,7 @@ $(() => {
                 currentGameState['winning-row'] = winningRow;
 
                 await getGameOverMessage(winResult);
+                $('#game-message-alert').addClass('game-message-alert-' + (winningRow.length == 0 ? 'default' : (currentGameState['game-board']['grid-values'][winningRow[0]] == 'X' ? 'primary' : 'warning')));
             }
             else
             {

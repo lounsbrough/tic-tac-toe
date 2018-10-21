@@ -25,7 +25,8 @@ if ($winResult == 0)
 if ($winResult == 0)
 {
     $gridClasses = array_map(function($value) {
-        switch ($value) {
+        switch ($value) 
+        {
             case 'X':
                 return 'btn-primary';
             case 'O':
@@ -42,6 +43,15 @@ else
     {
         $gridClasses[$index] = array_search($index, $winningRow) === false ? 'btn-default' : ($gridValue == 'X' ? 'btn-primary' : 'btn-warning');
     }
+}
+
+if (!empty($gameMessage)) 
+{
+    $gameMessageClass = 'game-message-alert-' . (empty($winningRow) ? 'default' : ($gridValues[$winningRow[0]] == 'X' ? 'primary' : 'warning'));
+}
+else
+{
+    $gameMessageClass = 'hide-message';
 }
 
 $gameInProgress = $gameState['game-in-progress'] == 'true';
@@ -143,10 +153,8 @@ else
 <div class="container-fluid">
     <div class="row">
 
-        <div class="mx-auto w-100 text-center">
-        <div id="game-message-alert" class="alert alert-warning game-message-alert <?= empty($gameMessage) ? 'hide-message' : '' ?>" role="alert">
-            <?= empty($gameMessage) ? '&nbsp;' : $gameMessage ?>
-        </div>
+        <div id="game-message-alert" class="mx-auto mb-3 w-100 text-center game-message-alert <?= $gameMessageClass ?>" role="alert">
+            <?= $gameMessage ?>
         </div>
 
         <div class="col-md-12 mb-5 text-center">

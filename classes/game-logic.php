@@ -272,7 +272,6 @@ class GameLogic
         if ($win == 0 && (array_count_values($grid)[''] ?? 0) == 0)
         {
             $win = 3;
-            $winningRow = array_fill(0, 3, 10);
         }
         
         return array(

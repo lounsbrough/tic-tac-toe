@@ -24,11 +24,21 @@ body {
 }
 .game-message-alert {
 	border-radius: 0px;
-	color: black;
-    background-color: #FCB115;
 	border: none;
     font-size: 50px;
     padding: 0px;
+}
+.game-message-alert-primary {
+	background-color: #4274D7;
+	color: #FFFFFF;
+}
+.game-message-alert-warning {
+	background-color: #FEAF20;
+	color: #212529;
+}
+.game-message-alert-default {
+	background-color: #F9F9F9;
+	color: #212529;
 }
 .hide-message {
 	visibility: hidden;
