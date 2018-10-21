@@ -1,4 +1,4 @@
-<?php
+<?PHP
 session_start();
 $currentGameState = $_SESSION['tictactoe-game-state'] ?? null;
 
