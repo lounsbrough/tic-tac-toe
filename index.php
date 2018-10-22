@@ -90,56 +90,61 @@ if (!$gameInProgress)
 
     <div class="row">
         <div class="col-md-12 mt-5 text-center control-row">
-            <div class="row">
 
-                <div class="col-md-12">
-                    <label class="game-settings-label">Difficulty</label>
-                    <div class="btn-group">
-                        <button id="difficulty-selected-button" type="button" class="btn btn-light difficulty-dropdown" disabled></button>
-                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split difficulty-dropdown" disabled data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item difficulty-option" data-difficulty="Novice" href="#">Novice</a>
-                            <a class="dropdown-item difficulty-option" data-difficulty="Normal" href="#">Normal</a>
-                            <a class="dropdown-item difficulty-option" data-difficulty="Genius" href="#">Genius</a>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="game-settings-label">Difficulty</label>
+                        <div class="btn-group">
+                            <button id="difficulty-selected-button" type="button" class="btn btn-light difficulty-dropdown" disabled></button>
+                            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split difficulty-dropdown" disabled data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item difficulty-option" data-difficulty="Novice" href="#">Novice</a>
+                                <a class="dropdown-item difficulty-option" data-difficulty="Normal" href="#">Normal</a>
+                                <a class="dropdown-item difficulty-option" data-difficulty="Genius" href="#">Genius</a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-12">
-                    <label class="game-settings-label">Play As</label>
-                    <div class="btn-group">
-                        <button id="symbol-selected-button" type="button" class="btn btn-light symbol-dropdown"></button>
-                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split symbol-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item symbol-option" data-symbol="X" href="#">X</a>
-                            <a class="dropdown-item symbol-option" data-symbol="O" href="#">O</a>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="game-settings-label">Play As</label>
+                        <div class="btn-group">
+                            <button id="symbol-selected-button" type="button" class="btn btn-light symbol-dropdown"></button>
+                            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split symbol-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item symbol-option" data-symbol="X" href="#">X</a>
+                                <a class="dropdown-item symbol-option" data-symbol="O" href="#">O</a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-12">                    
-                    <label class="game-settings-label">Who Starts?</label>
-                    <div class="btn-group">
-                        <button id="player-start-selected-button" type="button" class="btn btn-light player-start-dropdown"></button>
-                        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split player-start-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item player-start-option" data-player-start="true" href="#">Player</a>
-                            <a class="dropdown-item player-start-option" data-player-start="false" href="#">Computer</a>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="game-settings-label">Who Starts?</label>
+                        <div class="btn-group">
+                            <button id="player-start-selected-button" type="button" class="btn btn-light player-start-dropdown"></button>
+                            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split player-start-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item player-start-option" data-player-start="true" href="#">Player</a>
+                                <a class="dropdown-item player-start-option" data-player-start="false" href="#">Computer</a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-12">
-                    <button id="start-game-button" class="btn btn-primary">Start Game!</button>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <button id="start-game-button" class="btn btn-primary">Start Game!</button>
+                    </div>
                 </div>
-
-            </div>
         </div>
     </div>
 </div>
@@ -179,7 +184,7 @@ else
             
         </div>
 
-        <div class="col-md-12 text-center">
+        <div class="col-md-12 mb-5 text-center">
             <button id="start-over-button" class="btn btn-danger">Start Over</button>
         </div>
 
