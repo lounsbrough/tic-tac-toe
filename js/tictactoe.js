@@ -72,17 +72,21 @@ $(() => {
         const selectedPlayerStart = $(e.target).html() == 'Player' ? false : true;
         applyPlayerStart(selectedPlayerStart);
     });
+
+    const gameBoardButtons = () => {
+        return $('#game-board').find('button');
+    };
     
     const updateStateBoardFromScreen = async () => {
         currentGameState['game-board']['grid-values'] = [];
-        $('#game-board').find('button').each((index, button) => {
+        gameBoardButtons().each((index, button) => {
             currentGameState['game-board']['grid-values'].push($(button).html());
         });
         await saveGameState();
     };
 
     const updateScreenBoardFromState = () => {
-        $('#game-board').find('button').each((index, button) => {
+        gameBoardButtons().each((index, button) => {
             setGridCellValue($(button), currentGameState['game-board']['grid-values'][index]);
         });
     };
@@ -94,7 +98,7 @@ $(() => {
     };
 
     const disableAllCells = (button, symbol) => {
-        $('#game-board').find('button').prop('disabled', true);
+        gameBoardButtons().prop('disabled', true);
     };
     
     const resetGameBoard = async () => {
@@ -161,7 +165,7 @@ $(() => {
             const winResult = gameOver[0];
             const winningRow = gameOver[1];
             if (winResult > 0) {
-                $('#game-board').find('button').filter((index, button) => {
+                gameBoardButtons().filter((index, button) => {
                     return $.inArray(index, winningRow) == -1;
                 }).removeClass('btn-primary btn-warning').addClass('btn-default');
                 currentGameState['win-result'] = winResult;
@@ -173,7 +177,7 @@ $(() => {
             else
             {
                 disableAllCells();
-                $('#game-board').find('button').filter((index, button) => {
+                gameBoardButtons().filter((index, button) => {
                     return $(button).html() == '';
                 }).prop('disabled', false);
             }
@@ -212,7 +216,7 @@ $(() => {
         });
     };
 
-    $('#game-board').find('button').click(async (e, h) => {
+    gameBoardButtons().click(async (e, h) => {
         disableAllCells();
         await processPlayerMove($(e.target));
     });
@@ -225,7 +229,7 @@ $(() => {
     });
 
     $('#start-game-button').click(async () => {
-        setGameInProgress(true);
+        await setGameInProgress(true);
 
         if (!currentGameState['player-start'] && currentGameState['game-board']['grid-values'].filter((e) => e != '').length == 0) {
             await processAIMove();
