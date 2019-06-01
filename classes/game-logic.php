@@ -33,6 +33,11 @@ class GameLogic
 
         if ($this->tryToForceDefense($grid, $symbol)) return;
 
+        if ($this->isBoardEmpty($grid)) {
+            rand(0, 1) == 0 ? $this->tryToPlayCenter($grid, $symbol) : $this->tryToPlayCorner($grid, $symbol);
+            return;
+        }
+        
         if ($this->tryToPlayCenter($grid, $symbol)) return;
 
         if ($this->tryToPlayOppositeCorner($grid, $symbol)) return;
@@ -283,6 +288,11 @@ class GameLogic
     private function emptyBoxes($grid)
     {
         return array_keys($grid, '');
+    }
+    
+    private function isBoardEmpty($grid)
+    {
+        return count($this->emptyBoxes($grid)) == 9;
     }
 
     private function gridRows()
