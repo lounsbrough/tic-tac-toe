@@ -6,7 +6,7 @@ $gameDifficulty = $currentGameState['game-difficulty'];
 $playerSymbol = $currentGameState['player-symbol'];
 $grid = $currentGameState['game-board']['grid-values'];
 
-require_once dirname(__FILE__).'/../classes/game-logic.php';
+require_once dirname(__FILE__).'/../classes/game-logic-4x4.php';
 $gameLogic = new GameLogic();
 
 $gameOver = $gameLogic->checkGameOver($grid, $playerSymbol);
