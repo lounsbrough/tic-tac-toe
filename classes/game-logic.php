@@ -142,7 +142,10 @@ class GameLogic
     private function tryToForceDefense(&$grid, $symbol)
     {
         $opponentSymbol = $this->oppositeSymbol($symbol);
+        $cornersAndCenter = $this->cornersAndCenter();
 
+        $forceDefenseMovesCornerOrCenter = array();
+        $forceDefenseMovesEdge = array();
         foreach ($this->emptyBoxes($grid) as $i)
         {
             $futureGrid = $grid;
@@ -152,18 +155,35 @@ class GameLogic
                 $winningMoves = $this->winAvailable($futureGrid, $opponentSymbol);
                 if (count($winningMoves) < 2)
                 {
-                    $grid[$i] = $symbol;
-                    return true;
+                    if (in_array($i, $cornersAndCenter)) {
+                        $forceDefenseMovesCornerOrCenter[] = $i;
+                    } else {
+                        $forceDefenseMovesEdge[] = $i;
+                    }
                 }
             }
         }
+        
+        foreach ($forceDefenseMovesCornerOrCenter as $forceDefenseMoveCornerOrCenter)
+        {
+            $grid[$forceDefenseMoveCornerOrCenter] = $symbol;
+            return true;
+        }
+        
+        foreach ($forceDefenseMovesEdge as $forceDefenseMoveEdge)
+        {
+            $grid[$forceDefenseMoveEdge] = $symbol;
+            return true;
+        }
+        
+        return false;
     }
 
     private function tryToPlayCenter(&$grid, $symbol)
     {
-        if (empty($grid[4]))
+        if (empty($grid[$this->center()]))
         {
-            $grid[4] = $symbol;
+            $grid[$this->center()] = $symbol;
             return true;
         }
 
@@ -309,9 +329,19 @@ class GameLogic
         );
     }
 
+    private function center()
+    {
+        return 4;
+    }
+    
     private function corners()
     {
         return array(0, 2, 6, 8);
+    }
+
+    private function cornersAndCenter()
+    {
+        return array(0, 2, 4, 6, 8);
     }
 
     private function oppositeCorners()
