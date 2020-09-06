@@ -164,15 +164,13 @@ class GameLogic
             }
         }
         
-        foreach ($forceDefenseMovesCornerOrCenter as $forceDefenseMoveCornerOrCenter)
-        {
-            $grid[$forceDefenseMoveCornerOrCenter] = $symbol;
+        if (!empty($forceDefenseMovesCornerOrCenter)) {
+            $grid[$forceDefenseMovesCornerOrCenter[array_rand($forceDefenseMovesCornerOrCenter)]] = $symbol;
             return true;
         }
         
-        foreach ($forceDefenseMovesEdge as $forceDefenseMoveEdge)
-        {
-            $grid[$forceDefenseMoveEdge] = $symbol;
+        if (!empty($forceDefenseMovesEdge)) {
+            $grid[$forceDefenseMovesEdge[array_rand($forceDefenseMovesEdge)]] = $symbol;
             return true;
         }
         
