@@ -108,7 +108,8 @@ body {
 		font-size: 20px;
 	}
         .game-message-alert {
-	        font-size: 20px;
+                min-height: 25px;
+	        font-size: 25px;
         }
 	.grid-size-3 .btn {
 		width: 20vw;
