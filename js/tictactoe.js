@@ -73,22 +73,23 @@ $(() => {
         applyPlayerStart(selectedPlayerStart);
     });
 
-    const applySelectedGridSize = async (gridSize) => {
+    const applySelectedGridSize = (gridSize) => {
         $('#grid-size-selected-button').html(gridSize);
         $('.grid-size-dropdown').prop('disabled', false);
 
         currentGameState['game-grid-size'] = gridSize;
-        await resetGameBoard();
         saveGameState();
     };
 
     $('.grid-size-option').click((e, h) => {
         applySelectedGridSize($(e.target).attr('data-grid-size'));
+        resetGameBoard();
     });
 
     $('#grid-size-selected-button').click((e, h) => {
         const selectedGridSize = $(e.target).html();
         applySelectedGridSize(3 + ((selectedGridSize - 2) % 5))
+        resetGameBoard();
     });
 
     const gameBoardButtons = () => {
