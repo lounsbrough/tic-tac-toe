@@ -73,11 +73,12 @@ $(() => {
         applyPlayerStart(selectedPlayerStart);
     });
 
-    const applySelectedGridSize = (gridSize) => {
+    const applySelectedGridSize = async (gridSize) => {
         $('#grid-size-selected-button').html(gridSize);
         $('.grid-size-dropdown').prop('disabled', false);
 
         currentGameState['game-grid-size'] = gridSize;
+        await resetGameBoard();
         saveGameState();
     };
 
