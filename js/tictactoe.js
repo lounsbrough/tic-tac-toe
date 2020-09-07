@@ -73,6 +73,24 @@ $(() => {
         applyPlayerStart(selectedPlayerStart);
     });
 
+    const applySelectedGridSize = async (gridSize) => {
+        $('#grid-size-selected-button').html(gridSize);
+        $('.grid-size-dropdown').prop('disabled', false);
+
+        currentGameState['game-grid-size'] = gridSize;
+        await resetGameBoard();
+        saveGameState();
+    };
+
+    $('.grid-size-option').click((e, h) => {
+        applySelectedGridSize($(e.target).attr('data-grid-size'));
+    });
+
+    $('#grid-size-selected-button').click((e, h) => {
+        const selectedGridSize = $(e.target).html();
+        applySelectedGridSize(3 + ((selectedGridSize - 2) % 5))
+    });
+
     const gameBoardButtons = () => {
         return $('#game-board').find('button');
     };
@@ -103,7 +121,7 @@ $(() => {
     
     const resetGameBoard = async () => {
         if (currentGameState['game-board'] != null) {
-            currentGameState['game-board']['grid-values'] = new Array(9).fill('');
+            currentGameState['game-board']['grid-values'] = new Array(Math.pow(currentGameState['game-grid-size'], 2)).fill('');
         }
         currentGameState['win-result'] = 0;
         currentGameState['winning-row'] = [];
@@ -241,4 +259,5 @@ $(() => {
     applySelectedDifficulty(currentGameState['game-difficulty']);
     applySelectedSymbol(currentGameState['player-symbol']);
     applyPlayerStart(currentGameState['player-start'] == 'true');
+    applySelectedGridSize(currentGameState['game-grid-size']);
 });

@@ -2,21 +2,27 @@
 session_start();
 $gameState = $_SESSION['tictactoe-game-state'] ?? null;
 
-$gameState['game-board']['grid-values'] = $gameState['game-board']['grid-values'] ?? array_fill(0, 9, '');
 $gameState['game-in-progress'] = $gameState['game-in-progress'] ?? false;
 $gameState['game-difficulty'] = $gameState['game-difficulty'] ?? 'Normal';
 $gameState['player-symbol'] = $gameState['player-symbol'] ?? 'X';
 $gameState['player-start'] = $gameState['player-start'] ?? true;
+$gameState['game-grid-size'] = $gameState['game-grid-size'] ?? 3;
 $gameState['win-result'] = $gameState['win-result'] ?? 0;
 $gameState['winning-row'] = $gameState['winning-row'] ?? array();
 $gameState['game-message'] = $gameState['game-message'] ?? '';
+$gridCount = pow($gameState['game-grid-size'], 2);
+
+if (empty($gameState['game-board']['grid-values']) || count($gameState['game-board']['grid-values']) != $gridCount) {
+    $gameState['game-board']['grid-values'] = array_fill(0, $gridCount, '');
+}
+
 $gridValues = $gameState['game-board']['grid-values'];
 
 $winResult = $gameState['win-result'];
 $winningRow = $gameState['winning-row'];
 $gameMessage = $gameState['game-message'];
 
-$gridDisabled = array_fill(0, 9, 'disabled');
+$gridDisabled = array_fill(0, $gridCount, 'disabled');
 if ($winResult == 0)
 {
     $gridDisabled = array_map(function($value) { return empty($value) ? '' : 'disabled'; }, $gridValues);
@@ -38,7 +44,7 @@ if ($winResult == 0)
 }
 else
 {
-    $gridClasses = array_fill(0, 9, '');
+    $gridClasses = array_fill(0, $gridCount, '');
     foreach ($gridValues as $index => $gridValue)
     {
         $gridClasses[$index] = array_search($index, $winningRow) === false ? 'btn-default' : ($gridValue == 'X' ? 'btn-primary' : 'btn-warning');
@@ -61,6 +67,9 @@ session_write_close();
 
 <!DOCTYPE html>
 <html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 <body>
 
 <script>
@@ -76,10 +85,6 @@ session_write_close();
 
 <link rel="stylesheet" href="css/tictactoe.css">
 <script src="js/tictactoe.js"></script>
-
-<nav class="navbar navbar-dark bg-dark">
-    <span class="navbar-brand mb-0 h1 mx-auto text-center">TicTacToe</span>
-</nav>
 
 <?php
 if (!$gameInProgress)
@@ -140,6 +145,25 @@ if (!$gameInProgress)
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="game-settings-label">Grid Size</label>
+                        <div class="btn-group">
+                            <button id="grid-size-selected-button" type="button" class="btn btn-light grid-size-dropdown"></button>
+                            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split grid-size-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item grid-size-option" data-grid-size="3" href="#">3</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="4" href="#">4</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="5" href="#">5</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="6" href="#">6</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="7" href="#">7</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row mt-4">
                     <div class="col-md-12">
                         <button id="start-game-button" class="btn btn-primary">Start Game!</button>
@@ -162,29 +186,36 @@ else
             <?= $gameMessage ?>
         </div>
 
-        <div class="col-md-12 mb-5 text-center">
+        <div class="col-md-12 mb-4 text-center">
 
-            <table id="game-board" class="mx-auto">
-                <tr>
-                    <td><button type="button" class="btn <?= $gridClasses[0] ?> btn-sq-lg btn3d "<?= $gridDisabled[0] ?>><?= $gridValues[0] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[1] ?> btn-sq-lg btn3d "<?= $gridDisabled[1] ?>><?= $gridValues[1] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[2] ?> btn-sq-lg btn3d "<?= $gridDisabled[2] ?>><?= $gridValues[2] ?></button></td>
-                </tr>
-                <tr>
-                    <td><button type="button" class="btn <?= $gridClasses[3] ?> btn-sq-lg btn3d "<?= $gridDisabled[3] ?>><?= $gridValues[3] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[4] ?> btn-sq-lg btn3d "<?= $gridDisabled[4] ?>><?= $gridValues[4] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[5] ?> btn-sq-lg btn3d "<?= $gridDisabled[5] ?>><?= $gridValues[5] ?></button></td>
-                </tr>
-                <tr>
-                    <td><button type="button" class="btn <?= $gridClasses[6] ?> btn-sq-lg btn3d "<?= $gridDisabled[6] ?>><?= $gridValues[6] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[7] ?> btn-sq-lg btn3d "<?= $gridDisabled[7] ?>><?= $gridValues[7] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[8] ?> btn-sq-lg btn3d "<?= $gridDisabled[8] ?>><?= $gridValues[8] ?></button></td>
-                </tr>
+            <table id="game-board" class="mx-auto grid-size-<?php echo $gameState['game-grid-size']; ?>">
+
+                <?php
+                    for($row=0; $row<$gameState['game-grid-size']; $row++) {
+                ?>
+                    <tr>
+
+                        <?php
+                            for($column=0; $column<$gameState['game-grid-size']; $column++) {
+                                $cellIndex = $row * $gameState['game-grid-size'] + $column;
+                        ?>
+
+                            <td><button type="button" class="btn <?= $gridClasses[$cellIndex] ?> btn-sq-lg btn3d "<?= $gridDisabled[$cellIndex] ?>><?= $gridValues[$cellIndex] ?></button></td>
+
+                        <?php
+                            }
+                        ?>
+
+                    </tr>
+                <?php
+                    }
+                ?>
+
             </table>
             
         </div>
 
-        <div class="col-md-12 mb-5 text-center">
+        <div class="col-md-12 mb-1 text-center">
             <button id="start-over-button" class="btn btn-danger">Start Over</button>
         </div>
 
