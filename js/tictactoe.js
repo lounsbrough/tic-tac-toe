@@ -120,7 +120,7 @@ $(() => {
     
     const resetGameBoard = async () => {
         if (currentGameState['game-board'] != null) {
-            currentGameState['game-board']['grid-values'] = new Array(9).fill('');
+            currentGameState['game-board']['grid-values'] = new Array(Math.pow(currentGameState['game-grid-size'], 2)).fill('');
         }
         currentGameState['win-result'] = 0;
         currentGameState['winning-row'] = [];

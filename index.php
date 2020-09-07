@@ -2,7 +2,6 @@
 session_start();
 $gameState = $_SESSION['tictactoe-game-state'] ?? null;
 
-$gameState['game-board']['grid-values'] = $gameState['game-board']['grid-values'] ?? array_fill(0, 9, '');
 $gameState['game-in-progress'] = $gameState['game-in-progress'] ?? false;
 $gameState['game-difficulty'] = $gameState['game-difficulty'] ?? 'Normal';
 $gameState['player-symbol'] = $gameState['player-symbol'] ?? 'X';
@@ -11,13 +10,16 @@ $gameState['game-grid-size'] = $gameState['game-grid-size'] ?? 3;
 $gameState['win-result'] = $gameState['win-result'] ?? 0;
 $gameState['winning-row'] = $gameState['winning-row'] ?? array();
 $gameState['game-message'] = $gameState['game-message'] ?? '';
+$gridCount = pow($gameState['game-grid-size'], 2);
+$gameState['game-board']['grid-values'] = $gameState['game-board']['grid-values'] ?? array_fill(0, $gridCount, '');
+
 $gridValues = $gameState['game-board']['grid-values'];
 
 $winResult = $gameState['win-result'];
 $winningRow = $gameState['winning-row'];
 $gameMessage = $gameState['game-message'];
 
-$gridDisabled = array_fill(0, 9, 'disabled');
+$gridDisabled = array_fill(0, $gridCount, 'disabled');
 if ($winResult == 0)
 {
     $gridDisabled = array_map(function($value) { return empty($value) ? '' : 'disabled'; }, $gridValues);
@@ -39,7 +41,7 @@ if ($winResult == 0)
 }
 else
 {
-    $gridClasses = array_fill(0, 9, '');
+    $gridClasses = array_fill(0, $gridCount, '');
     foreach ($gridValues as $index => $gridValue)
     {
         $gridClasses[$index] = array_search($index, $winningRow) === false ? 'btn-default' : ($gridValue == 'X' ? 'btn-primary' : 'btn-warning');
@@ -62,6 +64,9 @@ session_write_close();
 
 <!DOCTYPE html>
 <html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
 <body>
 
 <script>
