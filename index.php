@@ -11,7 +11,10 @@ $gameState['win-result'] = $gameState['win-result'] ?? 0;
 $gameState['winning-row'] = $gameState['winning-row'] ?? array();
 $gameState['game-message'] = $gameState['game-message'] ?? '';
 $gridCount = pow($gameState['game-grid-size'], 2);
-$gameState['game-board']['grid-values'] = $gameState['game-board']['grid-values'] ?? array_fill(0, $gridCount, '');
+
+if (empty($gameState['game-board']['grid-values']) || count($gameState['game-board']['grid-values']) != $gridCount) {
+    $gameState['game-board']['grid-values'] = array_fill(0, $gridCount, '');
+}
 
 $gridValues = $gameState['game-board']['grid-values'];
 

@@ -1,6 +1,13 @@
 <?PHP
 class GameLogic
 {
+    private $gridSize;
+
+    public function __construct($gridSize) {
+        $this->gridSize = $gridSize;
+        $this->gridCellCount = pow($gridSize, 2);
+    }
+
     public function noviceMove(&$grid, $playerSymbol)
     {    
         $symbol = $this->oppositeSymbol($playerSymbol);
@@ -34,7 +41,11 @@ class GameLogic
         if ($this->tryToForceDefense($grid, $symbol)) return;
 
         if ($this->isBoardEmpty($grid)) {
-            rand(0, 1) == 0 ? $this->tryToPlayCenter($grid, $symbol) : $this->tryToPlayCorner($grid, $symbol);
+            if ($this->center() != null) {
+                rand(0, 1) == 0 ? $this->tryToPlayCenter($grid, $symbol) : $this->tryToPlayCorner($grid, $symbol);
+            } else {
+                $this->tryToPlayCorner($grid, $symbol);
+            }
             return;
         }
         
@@ -179,7 +190,13 @@ class GameLogic
 
     private function tryToPlayCenter(&$grid, $symbol)
     {
-        if (empty($grid[$this->center()]))
+        $center = $this->center();
+
+        if ($center == null) {
+            return false;
+        }
+
+        if (empty($grid[$center]))
         {
             $grid[$this->center()] = $symbol;
             return true;
@@ -236,30 +253,31 @@ class GameLogic
             return;
         }
 
-        $index = rand(0, 8);
+        $index = rand(0, $this->gridCellCount - 1);
         while (!empty($grid[$index]))
         {
-            $index = rand(0, 8);
+            $index = rand(0, $this->gridCellCount - 1);
         }
         $grid[$index] = $symbol;
     }
 
     private function winAvailable($grid, $symbol)
     {
-        $gridRows = $this->gridRows();
+        $gridLines = $this->gridLines();
         $winningMoves = array();
 
-        foreach ($gridRows as $gridRow)
+        foreach ($gridLines as $gridLine)
         {
-            $gridLine = array(
-                $grid[$gridRow[0]] ?? '',
-                $grid[$gridRow[1]] ?? '',
-                $grid[$gridRow[2]] ?? ''
+            $gridLineValues = array_map(
+                function($value) use ($grid) {
+                    return $grid[$value] ?? '';
+                },
+                $gridLine
             );
 
-            if ((array_count_values($gridLine)[$symbol] ?? 0) == 2 && (array_count_values($gridLine)[''] ?? 0) == 1)
+            if ((array_count_values($gridLineValues)[$symbol] ?? 0) == $this->gridSize - 1 && (array_count_values($gridLineValues)[''] ?? 0) == 1)
             {
-                $winningMoves[] = $gridRow[array_search('', $gridLine)];
+                $winningMoves[] = $gridLine[array_search('', $gridLineValues)];
             }
         }
 
@@ -268,21 +286,22 @@ class GameLogic
 
     public function checkGameOver($grid, $symbol)
     {
-        $gridRows = $this->gridRows();
+        $gridLines = $this->gridLines();
 
         $winningRow = array();
         $win = 0;
-        foreach ($gridRows as $gridRow)
+        foreach ($gridLines as $gridLine)
         {
-            $gridLine = array(
-                $grid[$gridRow[0]] ?? '',
-                $grid[$gridRow[1]] ?? '',
-                $grid[$gridRow[2]] ?? ''
+            $gridLineValues = array_map(
+                function($value) use ($grid) {
+                    return $grid[$value] ?? '';
+                },
+                $gridLine
             );
 
-            if (max($gridLine) != '' && array_count_values($gridLine)[max($gridLine)] == 3)
+            if (max($gridLineValues) != '' && array_count_values($gridLineValues)[max($gridLineValues)] == $this->gridSize)
             {
-                $winningRow = $gridRow;
+                $winningRow = $gridLine;
                 break;
             }
         }
@@ -310,43 +329,74 @@ class GameLogic
     
     private function isBoardEmpty($grid)
     {
-        return count($this->emptyBoxes($grid)) == 9;
+        return count($this->emptyBoxes($grid)) == $this->gridCellCount;
     }
 
-    private function gridRows()
+    private function gridLines()
     {
-        return array(
-            array(0, 1, 2),
-            array(3, 4, 5),
-            array(6, 7, 8),
-            array(0, 3, 6),
-            array(1, 4, 7),
-            array(2, 5, 8),
-            array(2, 4, 6),
-            array(0, 4, 8)
-        );
+        $gridLines = array();
+
+        for ($i=0; $i<$this->gridSize; $i++) {
+            $rowLine = array();
+            $columnLine = array();
+            for ($j=0; $j<$this->gridSize; $j++) {
+                array_push($rowLine, $i * $this->gridSize + $j);
+                array_push($columnLine, $i + $j * $this->gridSize);
+            }
+            array_push($gridLines, $rowLine);
+            array_push($gridLines, $columnLine);
+        }
+
+        $diagonalLeft = array();
+        $diagonalRight = array();
+        for ($i=0; $i<$this->gridSize; $i++) {
+            array_push($diagonalLeft, $i * ($this->gridSize + 1));
+            array_push($diagonalRight, ($i + 1) * ($this->gridSize - 1));
+        }
+
+        array_push($gridLines, $diagonalLeft);
+        array_push($gridLines, $diagonalRight);
+
+        return $gridLines;
     }
 
     private function center()
     {
-        return 4;
+        return $this->gridCellCount % 2 == 0 ? null : ($this->gridCellCount - 1) / 2;
     }
     
     private function corners()
     {
-        return array(0, 2, 6, 8);
+        return array(
+            0,
+            $this->gridSize - 1,
+            $this->gridCellCount - $this->gridSize,
+            $this->gridCellCount - 1
+        );
     }
 
     private function cornersAndCenter()
     {
-        return array(0, 2, 4, 6, 8);
+        $cornersAndCenter = $this->corners();
+
+        $center = $this->center();
+        if ($center != null) {
+            array_push($cornersAndCenter, $center);
+        }
+
+        return $cornersAndCenter;
     }
 
     private function oppositeCorners()
     {
         return array(
-            array(0, 8),
-            array(2, 6)
+            array(
+                0,
+                $this->gridCellCount - 1),
+            array(
+                $this->gridSize - 1,
+                $this->gridCellCount - $this->gridSize
+            )
         );
     }
 

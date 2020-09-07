@@ -4,10 +4,11 @@ $currentGameState = $_SESSION['tictactoe-game-state'] ?? null;
 
 $gameDifficulty = $currentGameState['game-difficulty'];
 $playerSymbol = $currentGameState['player-symbol'];
+$gridSize = $currentGameState['game-grid-size'];
 $grid = $currentGameState['game-board']['grid-values'];
 
 require_once dirname(__FILE__).'/../classes/game-logic.php';
-$gameLogic = new GameLogic();
+$gameLogic = new GameLogic($gridSize);
 
 switch ($gameDifficulty)
 {
