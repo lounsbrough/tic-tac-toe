@@ -73,6 +73,23 @@ $(() => {
         applyPlayerStart(selectedPlayerStart);
     });
 
+    const applySelectedGridSize = (gridSize) => {
+        $('#grid-size-selected-button').html(gridSize);
+        $('.grid-size-dropdown').prop('disabled', false);
+
+        currentGameState['game-grid-size'] = gridSize;
+        saveGameState();
+    };
+
+    $('.grid-size-option').click((e, h) => {
+        applySelectedGridSize($(e.target).attr('data-grid-size'));
+    });
+
+    $('#grid-size-selected-button').click((e, h) => {
+        const selectedGridSize = $(e.target).html();
+        applySelectedGridSize(3 + ((selectedGridSize - 2) % 7))
+    });
+
     const gameBoardButtons = () => {
         return $('#game-board').find('button');
     };
@@ -241,4 +258,5 @@ $(() => {
     applySelectedDifficulty(currentGameState['game-difficulty']);
     applySelectedSymbol(currentGameState['player-symbol']);
     applyPlayerStart(currentGameState['player-start'] == 'true');
+    applySelectedGridSize(currentGameState['game-grid-size']);
 });

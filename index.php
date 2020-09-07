@@ -7,6 +7,7 @@ $gameState['game-in-progress'] = $gameState['game-in-progress'] ?? false;
 $gameState['game-difficulty'] = $gameState['game-difficulty'] ?? 'Normal';
 $gameState['player-symbol'] = $gameState['player-symbol'] ?? 'X';
 $gameState['player-start'] = $gameState['player-start'] ?? true;
+$gameState['game-grid-size'] = $gameState['game-grid-size'] ?? 3;
 $gameState['win-result'] = $gameState['win-result'] ?? 0;
 $gameState['winning-row'] = $gameState['winning-row'] ?? array();
 $gameState['game-message'] = $gameState['game-message'] ?? '';
@@ -77,10 +78,6 @@ session_write_close();
 <link rel="stylesheet" href="css/tictactoe.css">
 <script src="js/tictactoe.js"></script>
 
-<nav class="navbar navbar-dark bg-dark">
-    <span class="navbar-brand mb-0 h1 mx-auto text-center">TicTacToe</span>
-</nav>
-
 <?php
 if (!$gameInProgress)
 {
@@ -135,6 +132,27 @@ if (!$gameInProgress)
                             <div class="dropdown-menu">
                                 <a class="dropdown-item player-start-option" data-player-start="true" href="#">Player</a>
                                 <a class="dropdown-item player-start-option" data-player-start="false" href="#">Computer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="game-settings-label">Grid Size</label>
+                        <div class="btn-group">
+                            <button id="grid-size-selected-button" type="button" class="btn btn-light grid-size-dropdown"></button>
+                            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split grid-size-dropdown" data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item grid-size-option" data-grid-size="3" href="#">3</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="4" href="#">4</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="5" href="#">5</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="6" href="#">6</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="7" href="#">7</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="8" href="#">8</a>
+                                <a class="dropdown-item grid-size-option" data-grid-size="9" href="#">9</a>
                             </div>
                         </div>
                     </div>
