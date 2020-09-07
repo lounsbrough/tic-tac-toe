@@ -151,8 +151,6 @@ if (!$gameInProgress)
                                 <a class="dropdown-item grid-size-option" data-grid-size="5" href="#">5</a>
                                 <a class="dropdown-item grid-size-option" data-grid-size="6" href="#">6</a>
                                 <a class="dropdown-item grid-size-option" data-grid-size="7" href="#">7</a>
-                                <a class="dropdown-item grid-size-option" data-grid-size="8" href="#">8</a>
-                                <a class="dropdown-item grid-size-option" data-grid-size="9" href="#">9</a>
                             </div>
                         </div>
                     </div>
@@ -180,9 +178,9 @@ else
             <?= $gameMessage ?>
         </div>
 
-        <div class="col-md-12 mb-5 text-center">
+        <div class="col-md-12 mb-4 text-center">
 
-            <table id="game-board" class="mx-auto">
+            <table id="game-board" class="mx-auto grid-size-<?php echo $gameState['game-grid-size']; ?>">
 
                 <?php
                     for($row=0; $row<$gameState['game-grid-size']; $row++) {
@@ -209,7 +207,7 @@ else
             
         </div>
 
-        <div class="col-md-12 mb-5 text-center">
+        <div class="col-md-12 mb-1 text-center">
             <button id="start-over-button" class="btn btn-danger">Start Over</button>
         </div>
 

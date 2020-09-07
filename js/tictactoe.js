@@ -87,7 +87,7 @@ $(() => {
 
     $('#grid-size-selected-button').click((e, h) => {
         const selectedGridSize = $(e.target).html();
-        applySelectedGridSize(3 + ((selectedGridSize - 2) % 7))
+        applySelectedGridSize(3 + ((selectedGridSize - 2) % 5))
     });
 
     const gameBoardButtons = () => {
