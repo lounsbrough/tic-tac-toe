@@ -183,21 +183,28 @@ else
         <div class="col-md-12 mb-5 text-center">
 
             <table id="game-board" class="mx-auto">
-                <tr>
-                    <td><button type="button" class="btn <?= $gridClasses[0] ?> btn-sq-lg btn3d "<?= $gridDisabled[0] ?>><?= $gridValues[0] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[1] ?> btn-sq-lg btn3d "<?= $gridDisabled[1] ?>><?= $gridValues[1] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[2] ?> btn-sq-lg btn3d "<?= $gridDisabled[2] ?>><?= $gridValues[2] ?></button></td>
-                </tr>
-                <tr>
-                    <td><button type="button" class="btn <?= $gridClasses[3] ?> btn-sq-lg btn3d "<?= $gridDisabled[3] ?>><?= $gridValues[3] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[4] ?> btn-sq-lg btn3d "<?= $gridDisabled[4] ?>><?= $gridValues[4] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[5] ?> btn-sq-lg btn3d "<?= $gridDisabled[5] ?>><?= $gridValues[5] ?></button></td>
-                </tr>
-                <tr>
-                    <td><button type="button" class="btn <?= $gridClasses[6] ?> btn-sq-lg btn3d "<?= $gridDisabled[6] ?>><?= $gridValues[6] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[7] ?> btn-sq-lg btn3d "<?= $gridDisabled[7] ?>><?= $gridValues[7] ?></button></td>
-                    <td><button type="button" class="btn <?= $gridClasses[8] ?> btn-sq-lg btn3d "<?= $gridDisabled[8] ?>><?= $gridValues[8] ?></button></td>
-                </tr>
+
+                <?php
+                    for($row=0; $row<$gameState['game-grid-size']; $row++) {
+                ?>
+                    <tr>
+
+                        <?php
+                            for($column=0; $column<$gameState['game-grid-size']; $column++) {
+                                $cellIndex = $row * $gameState['game-grid-size'] + $column;
+                        ?>
+
+                            <td><button type="button" class="btn <?= $gridClasses[$cellIndex] ?> btn-sq-lg btn3d "<?= $gridDisabled[$cellIndex] ?>><?= $gridValues[$cellIndex] ?></button></td>
+
+                        <?php
+                            }
+                        ?>
+
+                    </tr>
+                <?php
+                    }
+                ?>
+
             </table>
             
         </div>
